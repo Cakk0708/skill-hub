@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skill-hub"
+version = "0.1.0"
+description = "Manage shared AI coding skills and link them into projects"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "PyYAML>=6.0,<7",
+    "typer>=0.12,<1",
+]
+
+[project.scripts]
+skill-hub = "skill_hub.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

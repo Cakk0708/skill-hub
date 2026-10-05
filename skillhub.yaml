@@ -1,0 +1,34 @@
+# Paths for skills and projects are relative to this file unless absolute.
+settings:
+  link_mode: auto
+
+providers:
+  codex:
+    skill_dir: .codex/skills
+  claude:
+    skill_dir: .claude/skills
+  antigravity:
+    skill_dir: .agents/skills
+
+skills:
+  flow-docs:
+    path: skills/flow-docs
+  plan-docs:
+    path: skills/plan-docs
+  readme-docs:
+    path: skills/readme-docs
+
+projects:
+  ai-massage:
+    path: /Users/ly/Projects/xiaozhi-AI/
+    skills:
+      - flow-docs
+      - plan-docs
+      - readme-docs
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: false
