@@ -17,6 +17,16 @@ skills:
     path: skills/plan-docs
   readme-docs:
     path: skills/readme-docs
+  ui-semantic-locator:
+    path: skills/ui-semantic-locator
+  ui-control-protocol-create:
+    path: skills/ui-control-protocol-create
+  ui-control-protocol-update:
+    path: skills/ui-control-protocol-update
+  frontend-list:
+    path: skills/frontend-list
+  api-docs:
+    path: skills/api-docs
 
 projects:
   ai-massage:
@@ -25,6 +35,24 @@ projects:
       - flow-docs
       - plan-docs
       - readme-docs
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: false
+  mes:
+    path: /Users/cakk/Project/MES
+    skills:
+      - flow-docs
+      - plan-docs
+      - readme-docs
+      - ui-semantic-locator
+      - ui-control-protocol-create
+      - ui-control-protocol-update
+      - frontend-list
+      - api-docs
     providers:
       codex:
         enabled: true
