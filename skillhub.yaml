@@ -60,3 +60,16 @@ projects:
         enabled: false
       antigravity:
         enabled: false
+  szwpower:
+    path: /Users/cakk/Project/szwpower
+    skills:
+      - flow-docs
+      - plan-docs
+      - readme-docs
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: false
