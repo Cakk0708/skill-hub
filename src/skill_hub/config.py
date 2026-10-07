@@ -1,14 +1,20 @@
 from __future__ import annotations
 
 import os
+import re
 from pathlib import Path
 from typing import Any
 
 import yaml
+from dotenv import load_dotenv
 
 from .errors import ConfigError
 from .models import Config, Project, ProjectProvider, Skill
 from .providers import ProviderRegistry, parse_provider_overrides
+
+_ENVIRONMENT_VARIABLE = re.compile(
+    r"\$(?:\{(?P<braced>[A-Za-z_][A-Za-z0-9_]*)\}|(?P<plain>[A-Za-z_][A-Za-z0-9_]*))"
+)
 
 
 def _mapping(value: object, label: str) -> dict[str, Any]:
@@ -22,6 +28,13 @@ def _mapping(value: object, label: str) -> dict[str, Any]:
 def _path_from(base: Path, value: object, label: str) -> Path:
     if not isinstance(value, str) or not value.strip():
         raise ConfigError(f"'{label}' must be a non-empty path string")
+    for match in _ENVIRONMENT_VARIABLE.finditer(value):
+        variable = match.group("braced") or match.group("plain")
+        if not os.environ.get(variable):
+            raise ConfigError(
+                f"environment variable '{variable}' used in '{label}' is not set; "
+                "define it in the .env file next to skillhub.yaml"
+            )
     expanded = Path(os.path.expandvars(value)).expanduser()
     if not expanded.is_absolute():
         expanded = base / expanded
@@ -54,6 +67,7 @@ def load_config(file_path: Path) -> Config:
     file_path = file_path.expanduser().resolve(strict=False)
     if not file_path.is_file():
         raise ConfigError(f"configuration file not found: {file_path}")
+    load_dotenv(dotenv_path=file_path.parent / ".env")
     try:
         raw = yaml.safe_load(file_path.read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError) as exc:
@@ -125,4 +139,3 @@ def load_config(file_path: Path) -> Config:
         skills=skills,
         projects=projects,
     )
-

@@ -11,6 +11,7 @@ requires-python = ">=3.12"
 dependencies = [
     "PyYAML>=6.0,<7",
     "typer>=0.12,<1",
+    "python-dotenv>=1.0,<2",
 ]
 
 [project.scripts]
@@ -18,4 +19,3 @@ skill-hub = "skill_hub.cli:app"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-

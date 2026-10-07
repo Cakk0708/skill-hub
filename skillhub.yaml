@@ -27,10 +27,16 @@ skills:
     path: skills/frontend-list
   api-docs:
     path: skills/api-docs
+  mes-backend-api:
+    path: skills/mes-backend-api
+  mes-backend-schema:
+    path: skills/mes-backend-schema
+  mes-frontend-ui:
+    path: skills/mes-frontend-ui
 
 projects:
   ai-massage:
-    path: /Users/ly/Projects/xiaozhi-AI/
+    path: ${AI_MASSAGE_PROJECT}
     skills:
       - flow-docs
       - plan-docs
@@ -43,16 +49,19 @@ projects:
       antigravity:
         enabled: false
   mes:
-    path: /Users/cakk/Project/MES
+    path: ${MES_PROJECT}
     skills:
+      - api-docs
       - flow-docs
+      - frontend-list
       - plan-docs
       - readme-docs
       - ui-semantic-locator
       - ui-control-protocol-create
       - ui-control-protocol-update
-      - frontend-list
-      - api-docs
+      - mes-backend-api
+      - mes-backend-schema
+      - mes-frontend-ui
     providers:
       codex:
         enabled: true
@@ -61,7 +70,7 @@ projects:
       antigravity:
         enabled: false
   szwpower:
-    path: /Users/cakk/Project/szwpower
+    path: ${SZWPOWER_PROJECT}
     skills:
       - flow-docs
       - plan-docs

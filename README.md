@@ -90,7 +90,15 @@ projects:
         skills: []
 ```
 
-Paths for `skills.*.path` and `projects.*.path` are relative to the directory containing `skillhub.yaml`; `~` and environment variables are expanded. A Provider's relative `skill_dir` is relative to each project root. A built-in Provider may override its directory. A custom Provider must supply `skill_dir`.
+Paths for `skills.*.path` and `projects.*.path` are relative to the directory containing `skillhub.yaml`; `~` and environment variables are expanded. The CLI automatically loads a `.env` file beside the selected `skillhub.yaml`. Copy `.env.example` to `.env` and set the project paths for the current computer:
+
+```dotenv
+AI_MASSAGE_PROJECT=/path/to/xiaozhi-AI
+MES_PROJECT=/path/to/MES
+SZWPOWER_PROJECT=/path/to/szwpower
+```
+
+Keep `.env` local; it is excluded from version control. If a referenced variable is unset or empty, configuration loading reports an error. A Provider's relative `skill_dir` is relative to each project root. A built-in Provider may override its directory. A custom Provider must supply `skill_dir`.
 
 The final list for a project and Provider is the ordered union of the project's `skills` and that Provider's `skills`. Duplicate names are kept once. If a project omits its `providers` mapping, all configured Providers are enabled. When it specifies the mapping, only entries with `enabled: true` (or the default) are enabled.
 
