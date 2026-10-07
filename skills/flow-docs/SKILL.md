@@ -1,13 +1,12 @@
 ---
 name: flow-docs
 description: 
-  在创建、重命名、检查或更新 docs/interaction-flows 下的文件时使用。
-  执行流程目录命名、状态前缀、Markdown格式、流程
-  结构、执行状态和进度字段。不使用为源
-  在文档/流程或法典命令批准之外的代码更改。
+  在创建、重命名、检查或更新 docs/interaction-flows 下的文件或用户涉及”构造流程图“、”构造时序图“、”构造Mermaid图表“时使用。
 ---
 
 ## 内容要求
+
+执行流程目录命名、状态前缀、Markdown格式、流程结构、执行状态和进度字段。不使用为源在文档/流程或法典命令批准之外的代码更改。
 
 ### 格式约束
 
@@ -62,4 +61,5 @@ sequenceDiagram
 ### 流程表达
 
 - **格式要求**: 涉及流程表达时优先使用 mermaid 格式的时序图、流程图来表达。
+- **README**: 内容更新后同步更新 docs/interaction-flows/README 文档
 
