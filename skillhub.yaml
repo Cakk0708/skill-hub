@@ -33,6 +33,8 @@ skills:
     path: skills/mes-backend-schema
   mes-frontend-ui:
     path: skills/mes-frontend-ui
+  mes-frontend-tabbar:
+    path: skills/mes-frontend-tabbar
 
 projects:
   ai-massage:
@@ -62,6 +64,7 @@ projects:
       - mes-backend-api
       - mes-backend-schema
       - mes-frontend-ui
+      - mes-frontend-tabbar
     providers:
       codex:
         enabled: true
