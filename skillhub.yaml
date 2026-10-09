@@ -68,6 +68,7 @@ projects:
       - mes-backend-schema
       - mes-frontend-ui
       - mes-frontend-tabbar
+      - docker-deployment-standard
     providers:
       codex:
         enabled: true
@@ -81,6 +82,7 @@ projects:
       - flow-docs
       - plan-docs
       - readme-docs
+      - docker-deployment-standard
     providers:
       codex:
         enabled: true
