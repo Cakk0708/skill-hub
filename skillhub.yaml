@@ -33,6 +33,8 @@ skills:
     path: skills/mes-backend-schema
   mes-frontend-ui:
     path: skills/mes-frontend-ui
+  docker-deployment-standard:
+    path: skills/docker-deployment-standard
 
 projects:
   ai-massage:
@@ -41,6 +43,7 @@ projects:
       - flow-docs
       - plan-docs
       - readme-docs
+      - docker-deployment-standard
     providers:
       codex:
         enabled: true
