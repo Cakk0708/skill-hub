@@ -75,7 +75,7 @@ projects:
       claude:
         enabled: false
       antigravity:
-        enabled: false
+        enabled: true
   szwpower:
     path: ${SZWPOWER_PROJECT}
     skills:
