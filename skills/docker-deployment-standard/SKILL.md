@@ -2,7 +2,7 @@
 name: docker-deployment-standard
 description: >
   Docker 项目首次线上部署目录结构规范
-  在使用 Docker 部署应用时使用。遵循标准的 Dockerfile、docker-compose.yml 和部署流程，确保应用的可重复构建、版本控制和环境一致性。|
+  在使用 Docker 部署应用时使用。遵循标准的 Dockerfile、docker-compose.yaml 和部署流程，确保应用的可重复构建、版本控制和环境一致性。|
 ---
 
 

@@ -37,6 +37,18 @@ skills:
     path: skills/mes-frontend-tabbar
   docker-deployment-standard:
     path: skills/docker-deployment-standard
+  build-flash:
+    path: skills/build-flash
+  comment-standards:
+    path: skills/comment-standards
+  laya-massage-intent:
+    path: skills/laya-massage-intent
+  lingyang-hex-protocol-analysis:
+    path: skills/lingyang-hex-protocol-analysis
+  release_deployment:
+    path: skills/release_deployment
+  utterance_normalizer:
+    path: skills/utterance_normalizer
 
 projects:
   ai-massage:
@@ -46,6 +58,12 @@ projects:
       - plan-docs
       - readme-docs
       - docker-deployment-standard
+      - build-flash
+      - comment-standards
+      - laya-massage-intent
+      - lingyang-hex-protocol-analysis
+      - release_deployment
+      - utterance_normalizer
     providers:
       codex:
         enabled: true
