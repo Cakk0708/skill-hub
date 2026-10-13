@@ -141,3 +141,9 @@ description:
 
 - frontend/src/components/TechCrud
 - frontend/src/components/TechParticleCanvas
+
+## 设计要求
+
+- **视觉对齐**: 要求设计内容遵循“视觉对齐”原则
+- **视觉一致性**: 要求设计内容遵循“视觉一致性”原则
+
