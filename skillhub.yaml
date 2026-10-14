@@ -49,6 +49,8 @@ skills:
     path: skills/release_deployment
   utterance_normalizer:
     path: skills/utterance_normalizer
+  lingyang-ci1302-protocol-analysis:
+    path: skills/lingyang-ci1302-protocol-analysis
 
 projects:
   ai-massage:
@@ -62,6 +64,7 @@ projects:
       - comment-standards
       - laya-massage-intent
       - lingyang-hex-protocol-analysis
+      - lingyang-ci1302-protocol-analysis
       - release_deployment
       - utterance_normalizer
     providers:
