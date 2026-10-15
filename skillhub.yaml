@@ -45,12 +45,16 @@ skills:
     path: skills/laya-massage-intent
   lingyang-hex-protocol-analysis:
     path: skills/lingyang-hex-protocol-analysis
+  lingyang-7ctft-protocal-docs:
+    path: skills/lingyang-7ctft-protocal-docs
   release_deployment:
     path: skills/release_deployment
   utterance_normalizer:
     path: skills/utterance_normalizer
   lingyang-ci1302-protocol-analysis:
     path: skills/lingyang-ci1302-protocol-analysis
+  op-ssh-key:
+    path: skills/op-ssh-key
 
 projects:
   ai-massage:
@@ -67,6 +71,8 @@ projects:
       - lingyang-ci1302-protocol-analysis
       - release_deployment
       - utterance_normalizer
+      - lingyang-7ctft-protocal-docs
+      - op-ssh-key
     providers:
       codex:
         enabled: true
