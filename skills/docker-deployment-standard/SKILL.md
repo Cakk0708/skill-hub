@@ -6,7 +6,7 @@ description: >
 ---
 
 
-## 1. 目标
+# 1. 目标
 
 本规范用于指导 Docker 化项目首次部署到线上服务器时的目录设计。
 
@@ -54,15 +54,10 @@ Docker Image
 
 ```
 project/
-
 ├── service-a/
-│
 ├── service-b/
-│
 ├── service-c/
-│
 ├── docker-compose.dev.yml
-│
 └── .env
 ```
 
@@ -70,7 +65,6 @@ project/
 
 ```
 ai-massage/
-
 ├── xiaozhi-server/
 ├── manager-api/
 ├── manager-web/
@@ -103,20 +97,15 @@ ai-massage/
 
 ├── compose/
 │   └── docker-compose.prod.yml
-│
 ├── .env
-│
 ├── volumes/
 │   ├── mysql/
 │   ├── redis/
 │   ├── uploads/
 │   └── models/
-│
 ├── nginx/
 │   └── project.conf
-│
 ├── logs/
-│
 └── scripts/
     ├── deploy.sh
     └── backup.sh
@@ -126,23 +115,17 @@ ai-massage/
 
 ```
 /opt/ai-massage/
-
 ├── compose/
 │   └── docker-compose.prod.yml
-│
 ├── .env
-│
 ├── volumes/
 │   ├── mysql/
 │   ├── redis/
 │   ├── models/
 │   └── uploads/
-│
 ├── nginx/
 │   └── ai-massage.conf
-│
 ├── logs/
-│
 └── scripts/
 ```
 
@@ -338,11 +321,8 @@ docker rm mysql
 
 ```
 registry/
-
 ├── project-api
-│
 ├── project-web
-│
 └── project-server
 ```
 
@@ -374,16 +354,11 @@ latest
 ## API升级
 
 开发：
-
 ```
 修改代码
-
 ↓
-
 build image
-
 ↓
-
 push
 ```
 
@@ -412,15 +387,12 @@ docker compose up -d manager-api
 
 ```
 ECS
-
 ├── web
 ├── api
 ├── server
 └── redis
 
-
 RDS
-
 └── mysql
 ```
 
