@@ -11,48 +11,50 @@ providers:
     skill_dir: .agents/skills
 
 skills:
-  flow-docs:
-    path: skills/flow-docs
-  plan-docs:
-    path: skills/plan-docs
-  readme-docs:
-    path: skills/readme-docs
-  ui-semantic-locator:
-    path: skills/ui-semantic-locator
-  ui-control-protocol-create:
-    path: skills/ui-control-protocol-create
-  ui-control-protocol-update:
-    path: skills/ui-control-protocol-update
-  frontend-list:
-    path: skills/frontend-list
-  api-docs:
-    path: skills/api-docs
-  mes-backend-api:
-    path: skills/mes-backend-api
-  mes-backend-schema:
-    path: skills/mes-backend-schema
+  docs-flow:
+    path: skills/docs-flow
+  docs-plan:
+    path: skills/docs-plan
+  docs-readme:
+    path: skills/docs-readme
+  ui-semantic_locator:
+    path: skills/ui-semantic_locator
+  ui-control_protocol_create:
+    path: skills/ui-control_protocol_create
+  ui-control_protocol_update:
+    path: skills/ui-control_protocol_update
+  mes-frontend-list_design:
+    path: skills/mes-frontend-list_design
+  django-api_docs:
+    path: skills/django-api_docs
+  django-backend-api:
+    path: skills/django-backend-api
+  django-backend-schema:
+    path: skills/django-backend-schema
+  django-test:
+    path: skills/django-test
   mes-frontend-ui:
     path: skills/mes-frontend-ui
   mes-frontend-tabbar:
     path: skills/mes-frontend-tabbar
-  docker-deployment-standard:
-    path: skills/docker-deployment-standard
-  build-flash:
-    path: skills/build-flash
-  comment-standards:
-    path: skills/comment-standards
-  laya-massage-intent:
-    path: skills/laya-massage-intent
-  lingyang-hex-protocol-analysis:
-    path: skills/lingyang-hex-protocol-analysis
-  lingyang-7ctft-protocal-docs:
-    path: skills/lingyang-7ctft-protocal-docs
-  release_deployment:
-    path: skills/release_deployment
-  utterance_normalizer:
-    path: skills/utterance_normalizer
-  lingyang-ci1302-protocol-analysis:
-    path: skills/lingyang-ci1302-protocol-analysis
+  docker-deployment_standard:
+    path: skills/docker-deployment_standard
+  ai-massage-build_flash:
+    path: skills/ai-massage-build_flash
+  ai-massage-comment_standards:
+    path: skills/ai-massage-comment_standards
+  ai-massage-laya_massage_intent:
+    path: skills/ai-massage-laya_massage_intent
+  ai-massage-hex_protocol_analysis:
+    path: skills/ai-massage-hex_protocol_analysis
+  ai-massage-7ctft_protocal:
+    path: skills/ai-massage-7ctft_protocal
+  ai-massage-release_deployment:
+    path: skills/ai-massage-release_deployment
+  ai-massage-utterance_normalizer:
+    path: skills/ai-massage-utterance_normalizer
+  ai-massage-ci1302_protocol_analysis:
+    path: skills/ai-massage-ci1302_protocol_analysis
   op-ssh-key:
     path: skills/op-ssh-key
 
@@ -60,18 +62,18 @@ projects:
   ai-massage:
     path: ${AI_MASSAGE_PROJECT}
     skills:
-      - flow-docs
-      - plan-docs
-      - readme-docs
-      - docker-deployment-standard
-      - build-flash
-      - comment-standards
-      - laya-massage-intent
-      - lingyang-hex-protocol-analysis
-      - lingyang-ci1302-protocol-analysis
-      - release_deployment
-      - utterance_normalizer
-      - lingyang-7ctft-protocal-docs
+      - docs-flow
+      - docs-plan
+      - docs-readme
+      - docker-deployment_standard
+      - ai-massage-build_flash
+      - ai-massage-comment_standards
+      - ai-massage-laya_massage_intent
+      - ai-massage-hex_protocol_analysis
+      - ai-massage-ci1302_protocol_analysis
+      - ai-massage-release_deployment
+      - ai-massage-utterance_normalizer
+      - ai-massage-7ctft_protocal
       - op-ssh-key
     providers:
       codex:
@@ -83,19 +85,19 @@ projects:
   mes:
     path: ${MES_PROJECT}
     skills:
-      - api-docs
-      - flow-docs
-      - frontend-list
-      - plan-docs
-      - readme-docs
-      - ui-semantic-locator
-      - ui-control-protocol-create
-      - ui-control-protocol-update
-      - mes-backend-api
-      - mes-backend-schema
+      - django-api_docs
+      - docs-flow
+      - mes-frontend-list_design
+      - docs-plan
+      - docs-readme
+      - ui-semantic_locator
+      - ui-control_protocol_create
+      - ui-control_protocol_update
+      - django-backend-api
+      - django-backend-schema
       - mes-frontend-ui
       - mes-frontend-tabbar
-      - docker-deployment-standard
+      - docker-deployment_standard
     providers:
       codex:
         enabled: true
@@ -106,10 +108,10 @@ projects:
   szwpower:
     path: ${SZWPOWER_PROJECT}
     skills:
-      - flow-docs
-      - plan-docs
-      - readme-docs
-      - docker-deployment-standard
+      - docs-flow
+      - docs-plan
+      - docs-readme
+      - docker-deployment_standard
     providers:
       codex:
         enabled: true
