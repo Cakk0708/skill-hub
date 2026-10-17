@@ -41,6 +41,15 @@ def _path_from(base: Path, value: object, label: str) -> Path:
     return expanded.resolve(strict=False)
 
 
+def _has_unset_environment_variable(value: object) -> bool:
+    if not isinstance(value, str):
+        return False
+    return any(
+        not os.environ.get(match.group("braced") or match.group("plain"))
+        for match in _ENVIRONMENT_VARIABLE.finditer(value)
+    )
+
+
 def _names(value: object, label: str) -> tuple[str, ...]:
     if value is None:
         return ()
@@ -95,6 +104,8 @@ def load_config(file_path: Path) -> Config:
     for raw_name, raw_settings in _mapping(document.get("projects"), "projects").items():
         name = _validate_skill_name(raw_name, "project name")
         values = _mapping(raw_settings, f"projects.{name}")
+        if _has_unset_environment_variable(values.get("path")):
+            continue
         project_providers: dict[str, ProjectProvider] = {}
         for provider_name, provider_settings in _mapping(
             values.get("providers"), f"projects.{name}.providers"
