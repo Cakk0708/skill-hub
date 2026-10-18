@@ -95,6 +95,7 @@ projects:
       - ui-control_protocol_update
       - django-backend-api
       - django-backend-schema
+      - django-test
       - mes-frontend-ui
       - mes-frontend-tabbar
       - docker-deployment_standard

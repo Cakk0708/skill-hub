@@ -1,6 +1,7 @@
 ---
 name: django-test
 description: |
+  涉及“后端测试”、“单元测试”时使用
   Django 测试相关技能
 ---
 
@@ -49,3 +50,9 @@ backend/
     └── fixtures/
         └── common_data.py
 ```
+
+## 测试流程
+
+### 结果输出
+
+测试结果需输出总结到`docs/tests`文件夹下，以`日期+时间.md`输出测试结果
