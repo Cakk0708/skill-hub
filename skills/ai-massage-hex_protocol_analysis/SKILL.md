@@ -27,7 +27,7 @@ description: |
 执行任务时，请先判断用户需求的类型，**按需读取**以下参考文件：
 
 - 📌 **如果涉及 岭阳协议 解析**：
-  👉 读取并遵循 `references/岭阳电子二代APP通信协议及说明V0.35_20230911.xls`
+  👉 读取并遵循 `references/岭阳电子二代APP通信协议及说明V0.35_20230911.xls` & `references/commands-list.md`
 
 ## 逐帧解析流程
 

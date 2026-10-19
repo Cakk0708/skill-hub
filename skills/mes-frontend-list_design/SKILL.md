@@ -9,17 +9,17 @@ description:
 
 MES 前端可复用的列表页组件集中在 `frontend/src/components/DataPages/List/`，由页面按业务需要组合，不要求每个页面固定使用全部组件。组件通过属性、插槽和事件提供通用界面能力；页面负责数据请求、权限判断和业务处理。
 
-| 组件 | 职责 |
-| --- | --- |
-| `ListPageLayout` | 列表页布局容器；提供 `background`、`toolbar`、`group-list`、默认内容、`footer` 和 `overlays` 插槽。 |
-| `ListPageToolbar` | 通用列表操作栏；提供新增、复制、批量删除、操作组、导入导出等控件，并通过事件把操作交给页面处理。 |
-| `ListPageFilter` | 通用筛选区；支持条件筛选、快捷筛选、查询、重置和本地保存；`shellOnly` 模式可供自定义筛选内容复用外框和操作区。 |
-| `ListPageGroupTree` | 可拖宽的分组树侧栏；分组数据和增删改、选中等业务操作由页面提供和处理。 |
-| `ListPageTable` | 表格核心；负责行列渲染、排序、选择、树形数据、行操作、汇总、单元格插槽和列偏好设置。 |
-| `LegacyListTableAdapter` | 旧表格接口的兼容层；转换旧列配置和事件，并处理字典列、行选择及日志/消息单元格。 |
-| `ListPagePagination` | 分页栏；提供每页条数、页码跳转和选择统计，通过事件通知页面。 |
+| 组件 | 名称 | 职责 |
+| --- | --- | --- |
+| `ListPageLayout` | 列表页布局容器 | 提供 `background`、`toolbar`、`group-list`、默认内容、`footer` 和 `overlays` 插槽。 |
+| `ListPageToolbar` | 通用列表操作栏 | 提供新增、复制、批量删除、操作组、导入导出等控件，并通过事件把操作交给页面处理。 |
+| `ListPageFilter` | 通用筛选区 | 支持条件筛选、快捷筛选、查询、重置和本地保存；`shellOnly` 模式可供自定义筛选内容复用外框和操作区。 |
+| `ListPageGroupTree` | 可拖宽的分组树侧栏 | 分组数据和增删改、选中等业务操作由页面提供和处理。 |
+| `ListPageTable` | 表格核心 | 负责行列渲染、排序、选择、树形数据、行操作、汇总、单元格插槽和列偏好设置。 |
+| `LegacyListTableAdapter` | 旧表格接口的兼容层 | 转换旧列配置和事件，并处理字典列、行选择及日志/消息单元格。 |
+| `ListPagePagination` | 分页栏 | 提供每页条数、页码跳转和选择统计，通过事件通知页面。 |
 | `FilterActions` | 可独立复用的筛选操作按钮组。 |
-| `ParticleBackground` | 粒子背景组件的共享封装；从 `@/components/DataPages` 或 `DataPages/Shared` 使用。 |
+| `ParticleBackground` | 粒子背景组件的共享封装 | 从 `@/components/DataPages` 或 `DataPages/Shared` 使用。 |
 
 ### 组件使用与样式约束
 

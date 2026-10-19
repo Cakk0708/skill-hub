@@ -35,6 +35,8 @@ skills:
     path: skills/django-test
   mes-frontend-ui:
     path: skills/mes-frontend-ui
+  mes-frontend-test:
+    path: skills/mes-frontend-test
   mes-frontend-tabbar:
     path: skills/mes-frontend-tabbar
   docker-deployment_standard:
@@ -98,6 +100,7 @@ projects:
       - django-test
       - mes-frontend-ui
       - mes-frontend-tabbar
+      - mes-frontend-test
       - docker-deployment_standard
     providers:
       codex:
