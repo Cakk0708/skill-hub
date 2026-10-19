@@ -1,40 +1,50 @@
 ---
 name: mes-frontend-list_design
 description:
-  这个 skill 在涉及前端列表页面时使用，当涉及前端“列表页设计”、“前端列表”相关需求时触发
-  本技能用于要求列表页必须遵循设计理念，统一设计逻辑
+  涉及 MES 前端列表页设计、实现或调整时触发。
+  本技能规范 DataPages 列表组件的职责与组合方式，统一列表页布局、交互和视觉规则。
 ---
 
-## 页面组成结构
+## 页面结构与共享组件
 
-页面由组件 TechTableLayout 包裹，内部包含以下组件
+MES 前端可复用的列表页组件集中在 `frontend/src/components/DataPages/List/`，由页面按业务需要组合，不要求每个页面固定使用全部组件。组件通过属性、插槽和事件提供通用界面能力；页面负责数据请求、权限判断和业务处理。
 
-- **TechParticleCanvas**: 酷炫科技粒子背景
-- **TechTableToolbar**: 顶部操作条
-- **TechTableFilter**: 搜索过滤条
-- **TechGroupList**: 分组表格主体
-- **TechDataTable**: 核心表格主体
-- **TechTablePagination**: 底部统计与分页
+| 组件 | 职责 |
+| --- | --- |
+| `ListPageLayout` | 列表页布局容器；提供 `background`、`toolbar`、`group-list`、默认内容、`footer` 和 `overlays` 插槽。 |
+| `ListPageToolbar` | 通用列表操作栏；提供新增、复制、批量删除、操作组、导入导出等控件，并通过事件把操作交给页面处理。 |
+| `ListPageFilter` | 通用筛选区；支持条件筛选、快捷筛选、查询、重置和本地保存；`shellOnly` 模式可供自定义筛选内容复用外框和操作区。 |
+| `ListPageGroupTree` | 可拖宽的分组树侧栏；分组数据和增删改、选中等业务操作由页面提供和处理。 |
+| `ListPageTable` | 表格核心；负责行列渲染、排序、选择、树形数据、行操作、汇总、单元格插槽和列偏好设置。 |
+| `LegacyListTableAdapter` | 旧表格接口的兼容层；转换旧列配置和事件，并处理字典列、行选择及日志/消息单元格。 |
+| `ListPagePagination` | 分页栏；提供每页条数、页码跳转和选择统计，通过事件通知页面。 |
+| `FilterActions` | 可独立复用的筛选操作按钮组。 |
+| `ParticleBackground` | 粒子背景组件的共享封装；从 `@/components/DataPages` 或 `DataPages/Shared` 使用。 |
 
 ### 组件使用与样式约束
 
-- 列表区域必须使用项目共享组件承载，不在页面中重写筛选条、分组列表、核心表格或分页块；统一组合 `TechTableLayout`、`TechTableFilter`、`TechGroupList`、`TechDataTable` 和 `TechTablePagination`。
-- 字段元数据筛选需要远程关联选择等能力时，使用共享组合组件 `SearchConditions`；旧表格公开属性或事件契约无法直接迁移时，使用 `TechLegacyTableAdapter`。不要在页面中另造筛选器、表格或适配层。
+- 新建或重构列表页时，优先使用 `ListPageLayout`、`ListPageToolbar`、`ListPageFilter`、`ListPageGroupTree`、`ListPageTable` 和 `ListPagePagination` 等共享组件；按页面实际需要选用，不要在页面中重写筛选区、分组树、表格或分页。
+- 字段元数据筛选需要远程关联选择等扩展能力时，使用共享组合组件 `SearchConditions`；旧表格公开属性或事件契约暂时无法迁移时，使用 `LegacyListTableAdapter`。不要在页面中另造筛选器、表格或适配层。
 - 页面只通过共享组件公开的属性、事件和插槽传递业务数据与行为，不增加只服务单个页面的视觉配置。
 - 不在页面样式中覆盖 `.table-card`、筛选条、表头/表体或分页容器的内边距、间距、尺寸、颜色和边框。标准组件缺少共用样式能力时，应修改共享组件本身，让使用该组件的列表保持一致。
 
+### 列表页组合方式
+
+- `ListPageLayout` 的 `toolbar` 插槽承载 `ListPageToolbar`；有分组时把 `ListPageGroupTree` 放入 `group-list` 插槽；默认插槽内容位于右侧 `.table-card`，通常放筛选区和表格；把 `ListPagePagination` 放入 `footer` 插槽，使其与右侧表格区同宽。
+- `background` 和 `overlays` 插槽分别用于背景与浮层。粒子背景使用共享封装 `ParticleBackground`。
+- 新页面直接使用 `ListPageTable`。已有页面仍依赖旧表格属性或事件时使用 `LegacyListTableAdapter` 维持兼容，避免在适配层外重复实现旧契约。
+- 列表关联的详情视图可使用 `frontend/src/components/DataPages/Detail/DetailPageLayout.vue`；列表页规则不替代详情表单自身的业务和交互要求。
+
 ### 顶部操作条
 
-顶部操作条包含以下按钮：
+`ListPageToolbar` 提供以下常见操作控件，实际显示项和操作组由页面按本模块业务选择：
 
-- **新增**: 通用
-- **删除**: 通常 disable，勾选一条单据以上时显示，用于批量删除单据
-- **提交**: 通常 disable，勾选一条单据以上时显示，用于批量提交单据，下拉框包含"提交"、"取消提交"选项，直接点击为提交效果
-- **审核**: 通常 disable，勾选一条单据以上时显示，用于批量审核单据，下拉框包含"审核"、"反审核"选项，直接点击为审核效果
-- **业务操作**: 通用，用于批量操作单据状态，下拉框包含"禁用"、"启用"选项，直接点击为对应操作
-- **导出**: 通用。下拉框包含"导出"、"导入"选项，直接点击为导出效果
+- **新增和复制**：可配置显示；复制需有已选记录。
+- **批量删除**：可配置显示；默认在没有选中记录时禁用。
+- **操作组**：默认提供提交/撤销、审核/反审核和启用/禁用等组，也可通过 `actionGroups` 配置本模块的操作。
+- **导入导出**：可分别控制显示和禁用状态。
 
-所有模块的顶部操作条按钮都是统一的，不得差异化处理；
+`ListPageToolbar` 统一操作栏的布局和交互样式。页面可通过组件公开的属性及 `prefix`、`actions`、`extra-actions`、`tools` 插槽配置本模块需要的操作，并在页面中处理组件发出的事件；不要在页面中另行搭建一套操作栏。
 
 ### 搜索过滤条
 
@@ -68,7 +78,7 @@ description:
 
 #### 缓存方式介绍
 
-缓存方式为 localStorage，key 为 `tech_table_filter_${appName}_${moduleName}`，value 为搜索条件的 JSON 字符串
+筛选配置保存在当前浏览器的 `localStorage`，默认按账号及 `modelPart`（未提供时按当前路由）区分；可通过 `storageKey` 指定存储键。沿用 `filterConfig` 工具和共享组件的存储约定，不要在页面中另行构造缓存键。
 
 ### API 字段与筛选元数据
 
@@ -92,9 +102,9 @@ description:
     - 底部统计与分页
 ```
 
-在 `TechTableLayout` 中按以下位置组合：`TechGroupList` 放入 `group-list` 插槽，作为左侧区域独立于 `.table-card`；默认插槽中的搜索过滤条和核心表格放在右侧 `.table-card`；`TechTablePagination` 放入 `footer` 插槽，在右侧主列中紧接表格卡片下方、与表格区同宽。不要把分组列表放进 `.table-card`，也不要让分页横跨分组区和表格区。
+在 `ListPageLayout` 中按以下位置组合：`ListPageGroupTree` 放入 `group-list` 插槽，作为左侧区域独立于 `.table-card`；默认插槽中的搜索过滤条和核心表格放在右侧 `.table-card`；`ListPagePagination` 放入 `footer` 插槽，在右侧主列中紧接表格卡片下方、与表格区同宽。不要把分组树放进 `.table-card`，也不要让分页横跨分组区和表格区。
 
-每个分组表格包含以下块：
+有分组的列表页使用分组树侧栏筛选右侧表格数据，通常包含：
 
 - 分组筛选
 - 分组内容（核心表格主体）
@@ -146,8 +156,10 @@ description:
 
 ## 组件路径
 
-- frontend/src/components/TechCrud
-- frontend/src/components/TechParticleCanvas
+- `frontend/src/components/DataPages/List`
+- `frontend/src/components/DataPages/Shared`
+- `frontend/src/components/DataPages/Detail`
+- 元数据扩展筛选组合组件：`frontend/src/components/SearchConditions`
 
 ## 设计要求
 
