@@ -57,7 +57,7 @@ project/
 ├── service-a/
 ├── service-b/
 ├── service-c/
-├── docker-compose.dev.yml
+├── docker-compose.dev.yaml
 └── .env
 ```
 
@@ -68,7 +68,7 @@ ai-massage/
 ├── xiaozhi-server/
 ├── manager-api/
 ├── manager-web/
-├── docker-compose.yml
+├── docker-compose.yaml
 └── .env
 ```
 
@@ -96,7 +96,7 @@ ai-massage/
 /opt/project-name/
 
 ├── compose/
-│   └── docker-compose.prod.yml
+│   └── docker-compose.prod.yaml
 ├── .env
 ├── volumes/
 │   ├── mysql/
@@ -116,7 +116,7 @@ ai-massage/
 ```
 /opt/ai-massage/
 ├── compose/
-│   └── docker-compose.prod.yml
+│   └── docker-compose.prod.yaml
 ├── .env
 ├── volumes/
 │   ├── mysql/
