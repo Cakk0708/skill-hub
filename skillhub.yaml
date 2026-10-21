@@ -1,4 +1,5 @@
-# Paths for skills and projects are relative to this file unless absolute.
+# Project paths are relative to this file unless absolute.
+# Skills are discovered from the immediate subdirectories of skills/.
 settings:
   link_mode: auto
 
@@ -10,56 +11,6 @@ providers:
   antigravity:
     skill_dir: .agents/skills
 
-skills:
-  docs-flow:
-    path: skills/docs-flow
-  docs-plan:
-    path: skills/docs-plan
-  docs-readme:
-    path: skills/docs-readme
-  ui-semantic_locator:
-    path: skills/ui-semantic_locator
-  ui-control_protocol_create:
-    path: skills/ui-control_protocol_create
-  ui-control_protocol_update:
-    path: skills/ui-control_protocol_update
-  mes-frontend-list_design:
-    path: skills/mes-frontend-list_design
-  django-api_docs:
-    path: skills/django-api_docs
-  django-backend-api:
-    path: skills/django-backend-api
-  django-backend-schema:
-    path: skills/django-backend-schema
-  django-test:
-    path: skills/django-test
-  mes-frontend-ui:
-    path: skills/mes-frontend-ui
-  mes-frontend-test:
-    path: skills/mes-frontend-test
-  mes-frontend-tabbar:
-    path: skills/mes-frontend-tabbar
-  docker-deployment_standard:
-    path: skills/docker-deployment_standard
-  ai-massage-build_flash:
-    path: skills/ai-massage-build_flash
-  ai-massage-comment_standards:
-    path: skills/ai-massage-comment_standards
-  ai-massage-laya_massage_intent:
-    path: skills/ai-massage-laya_massage_intent
-  ai-massage-hex_protocol_analysis:
-    path: skills/ai-massage-hex_protocol_analysis
-  ai-massage-7ctft_protocal:
-    path: skills/ai-massage-7ctft_protocal
-  ai-massage-release_deployment:
-    path: skills/ai-massage-release_deployment
-  ai-massage-utterance_normalizer:
-    path: skills/ai-massage-utterance_normalizer
-  ai-massage-ci1302_protocol_analysis:
-    path: skills/ai-massage-ci1302_protocol_analysis
-  op-ssh-key:
-    path: skills/op-ssh-key
-
 projects:
   ai-massage:
     path: ${AI_MASSAGE_PROJECT}
@@ -67,15 +18,15 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment_standard
-      - ai-massage-build_flash
-      - ai-massage-comment_standards
-      - ai-massage-laya_massage_intent
-      - ai-massage-hex_protocol_analysis
-      - ai-massage-ci1302_protocol_analysis
-      - ai-massage-release_deployment
-      - ai-massage-utterance_normalizer
-      - ai-massage-7ctft_protocal
+      - docker-deployment-standard
+      - ai-massage-build-flash
+      - ai-massage-comment-standards
+      - ai-massage-laya-massage-intent
+      - ai-massage-protocol-lingyang-board
+      - ai-massage-protocol-ci1302
+      - ai-massage-protocol-7ctft
+      - ai-massage-release-deployment
+      - ai-massage-utterance-normalizer
       - op-ssh-key
     providers:
       codex:
@@ -87,21 +38,22 @@ projects:
   mes:
     path: ${MES_PROJECT}
     skills:
-      - django-api_docs
       - docs-flow
-      - mes-frontend-list_design
       - docs-plan
       - docs-readme
-      - ui-semantic_locator
-      - ui-control_protocol_create
-      - ui-control_protocol_update
+      - ui-semantic-locator
+      - ui-control-protocol-create
+      - ui-control-protocol-update
       - django-backend-api
       - django-backend-schema
+      - django-api-docs
       - django-test
       - mes-frontend-ui
       - mes-frontend-tabbar
       - mes-frontend-test
-      - docker-deployment_standard
+      - mes-frontend-list-design
+      - docker-deployment-standard
+      - op-ssh-key
     providers:
       codex:
         enabled: true
@@ -115,7 +67,8 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment_standard
+      - docker-deployment-standard
+      - op-ssh-key
     providers:
       codex:
         enabled: true

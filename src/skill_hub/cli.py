@@ -14,13 +14,14 @@ from .operations import sync as run_sync
 from .providers import ProviderRegistry
 
 app = typer.Typer(help="Manage shared AI coding skills across projects.", no_args_is_help=True)
-skill_app = typer.Typer(help="Inspect configured skills.", no_args_is_help=True)
+skill_app = typer.Typer(help="Inspect discovered skills.", no_args_is_help=True)
 project_app = typer.Typer(help="Inspect configured projects.", no_args_is_help=True)
 app.add_typer(skill_app, name="skill")
 app.add_typer(project_app, name="project")
 
 
-SAMPLE_CONFIG = """# Paths for skills and projects are relative to this file unless absolute.
+SAMPLE_CONFIG = """# Project paths are relative to this file unless absolute.
+# Skills are discovered from the immediate subdirectories of skills/.
 settings:
   link_mode: auto
 
@@ -31,10 +32,6 @@ providers:
     skill_dir: .claude/skills
   antigravity:
     skill_dir: .agents/skills
-
-skills:
-  example:
-    path: skills/example
 
 projects:
   example-project:
@@ -125,7 +122,7 @@ def init(
 def skill_list(
     config_path: Path = typer.Option(Path("skillhub.yaml"), "--config", "-c"),
 ) -> None:
-    """List configured skills and their source directories."""
+    """List discovered skills and their source directories."""
     config = _config(config_path)
     if not config.skills:
         typer.echo("No skills configured.")
@@ -160,7 +157,7 @@ def skill_help(
     ),
     config_path: Path = typer.Option(Path("skillhub.yaml"), "--config", "-c"),
 ) -> None:
-    """List configured skills and their short descriptions."""
+    """List discovered skills and their short descriptions."""
     config = _config(config_path)
     if skill_name is None:
         skills = tuple(config.skills.values())

@@ -13,12 +13,32 @@ from skill_hub.providers import ProviderRegistry
 
 
 class ConfigTests(unittest.TestCase):
+    def test_discovers_all_immediate_skill_directories_on_each_load(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            (root / "skills" / "zeta").mkdir(parents=True)
+            (root / "skills" / "alpha").mkdir(parents=True)
+            (root / "skills" / "README.md").write_text("not a skill", encoding="utf-8")
+            config_path = root / "skillhub.yaml"
+            config_path.write_text("projects: {}\n", encoding="utf-8")
+
+            first_config = load_config(config_path)
+            (root / "skills" / "new-skill").mkdir()
+            second_config = load_config(config_path)
+
+            self.assertEqual(tuple(first_config.skills), ("alpha", "zeta"))
+            self.assertEqual(tuple(second_config.skills), ("alpha", "new-skill", "zeta"))
+            self.assertEqual(
+                second_config.skills["new-skill"].path,
+                (root / "skills" / "new-skill").resolve(),
+            )
+
     def test_parses_configuration_and_resolves_relative_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "skills" / "shared").mkdir(parents=True)
             (root / "skillhub.yaml").write_text(
-                """settings:\n  link_mode: auto\nskills:\n  shared:\n    path: skills/shared\nprojects:\n  app:\n    path: ../app\n    skills: [shared]\n""",
+                """settings:\n  link_mode: auto\nprojects:\n  app:\n    path: ../app\n    skills: [shared]\n""",
                 encoding="utf-8",
             )
 
@@ -39,7 +59,7 @@ class ConfigTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             (root / "skillhub.yaml").write_text(
-                """providers:\n  codex:\n    skill_dir: .custom/codex\nskills: {}\nprojects: {}\n""",
+                """providers:\n  codex:\n    skill_dir: .custom/codex\nprojects: {}\n""",
                 encoding="utf-8",
             )
             config = load_config(root / "skillhub.yaml")
@@ -124,7 +144,7 @@ class LinkTests(unittest.TestCase):
             project_path = root / "project"
             project_path.mkdir()
             (root / "skillhub.yaml").write_text(
-                """skills:\n  shared:\n    path: skills/shared\n  codex-only:\n    path: skills/codex-only\nprojects:\n  app:\n    path: project\n    skills: [shared]\n    providers:\n      codex:\n        enabled: true\n        skills: [codex-only]\n      antigravity:\n        enabled: true\n""",
+                """projects:\n  app:\n    path: project\n    skills: [shared]\n    providers:\n      codex:\n        enabled: true\n        skills: [codex-only]\n      antigravity:\n        enabled: true\n""",
                 encoding="utf-8",
             )
 
@@ -141,7 +161,7 @@ class LinkTests(unittest.TestCase):
             project_path.mkdir()
             config_path = root / "skillhub.yaml"
             config_path.write_text(
-                """skills:\n  shared:\n    path: skills/shared\nprojects:\n  app:\n    path: project\n    skills: [shared]\n    providers:\n      codex:\n        enabled: true\n""",
+                """projects:\n  app:\n    path: project\n    skills: [shared]\n    providers:\n      codex:\n        enabled: true\n""",
                 encoding="utf-8",
             )
             config = load_config(config_path)

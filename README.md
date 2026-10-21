@@ -5,7 +5,7 @@
 ## 设计
 
 - `skills/` 是 Skill 的唯一维护位置。每个 Skill 是一个目录，入口文件为 `SKILL.md`，可包含脚本、参考资料和其他资源。
-- `skillhub.yaml` 记录 Skill 源路径、项目路径、Provider 目录，以及项目使用的公共和专属 Skill。
+- `skillhub.yaml` 自动发现 `skills/` 下的一级 Skill 目录，并记录项目路径、Provider 目录，以及项目使用的公共和专属 Skill。
 - 每个项目里的目标项是指向 Skill Hub 源目录的链接。编辑源 Skill 后，链接到它的项目会立即看到更新。
 - Provider 通过集中注册表定义，内置 `codex`、`claude`、`antigravity`，配置也可增加自定义 Provider。
 - `LinkStrategy` 将检查、创建、删除链接统一成 `check`、`create`、`remove` 操作。
@@ -61,14 +61,6 @@ providers:
   cursor:
     skill_dir: .cursor/skills
 
-skills:
-  python-review:
-    path: skills/python-review
-  release-check:
-    path: skills/release-check
-  claude-writing:
-    path: skills/claude-writing
-
 projects:
   billing-api:
     path: ../billing-api
@@ -90,7 +82,7 @@ projects:
         skills: []
 ```
 
-Paths for `skills.*.path` and `projects.*.path` are relative to the directory containing `skillhub.yaml`; `~` and environment variables are expanded. The CLI automatically loads a `.env` file beside the selected `skillhub.yaml`. Copy `.env.example` to `.env` and set the project paths for the current computer:
+Every immediate subdirectory of `skills/` is discovered as a Skill. The directory name is the Skill name and its path is derived automatically; files directly inside `skills/` are ignored. Add or remove a Skill directory and the next command run sees the change without editing `skillhub.yaml`. Project paths are relative to the directory containing `skillhub.yaml`; `~` and environment variables are expanded. The CLI automatically loads a `.env` file beside the selected `skillhub.yaml`. Copy `.env.example` to `.env` and set the project paths for the current computer:
 
 ```dotenv
 AI_MASSAGE_PROJECT=/path/to/xiaozhi-AI
@@ -98,7 +90,7 @@ MES_PROJECT=/path/to/MES
 SZWPOWER_PROJECT=/path/to/szwpower
 ```
 
-Keep `.env` local; it is excluded from version control. A project whose path references an unset or empty variable is skipped, so each computer can configure only the projects it uses. Unset or empty variables in `skills.*.path` still produce a configuration error. A Provider's relative `skill_dir` is relative to each project root. A built-in Provider may override its directory. A custom Provider must supply `skill_dir`.
+Keep `.env` local; it is excluded from version control. A project whose path references an unset or empty variable is skipped, so each computer can configure only the projects it uses. A Provider's relative `skill_dir` is relative to each project root. A built-in Provider may override its directory. A custom Provider must supply `skill_dir`.
 
 The final list for a project and Provider is the ordered union of the project's `skills` and that Provider's `skills`. Duplicate names are kept once. If a project omits its `providers` mapping, all configured Providers are enabled. When it specifies the mapping, only entries with `enabled: true` (or the default) are enabled.
 
@@ -128,9 +120,9 @@ skill-hub doctor
 
 可通过 `--config path/to/skillhub.yaml` 指定配置文件。`init` 可使用 `--directory path/to/hub` 指定初始化目录。
 
-- `skill list`：列出 Skill 源目录和可用状态。
+- `skill list`：列出自动发现的 Skill 源目录和可用状态。
 - `project list`：列出项目、启用的 Provider 和最终 Skill 列表。
-- `help`：列出配置中的 Skill 名称和简短说明，不展开指令正文；可传 Skill 名称只列出一个，例如 `skill-hub help python-review`。
+- `help`：列出自动发现的 Skill 名称和简短说明，不展开指令正文；可传 Skill 名称只列出一个，例如 `skill-hub help python-review`。
 - `status`：显示每条期望链接的目标、源和实际状态。
 - `sync`：创建缺失的链接；有冲突或路径缺失时报告并返回非零退出码。
 - `doctor`：检查项目目录、Skill 源、断链、错误目标、普通文件/目录冲突，以及共享 Provider 目录上的技能可见性重叠。

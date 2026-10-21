@@ -72,6 +72,28 @@ def _validate_skill_name(name: object, label: str) -> str:
     return name
 
 
+def _discover_skills(root: Path) -> dict[str, Skill]:
+    """Discover skills from the immediate subdirectories of ``skills/``."""
+    skill_root = root / "skills"
+    if not skill_root.exists():
+        return {}
+    if not skill_root.is_dir():
+        raise ConfigError(f"skill directory is not a directory: {skill_root}")
+
+    try:
+        entries = sorted(skill_root.iterdir(), key=lambda entry: entry.name)
+    except OSError as exc:
+        raise ConfigError(f"could not scan skill directory: {exc}") from exc
+
+    skills: dict[str, Skill] = {}
+    for entry in entries:
+        if not entry.is_dir():
+            continue
+        name = _validate_skill_name(entry.name, "skill directory name")
+        skills[name] = Skill(name=name, path=entry.resolve(strict=False))
+    return skills
+
+
 def load_config(file_path: Path) -> Config:
     file_path = file_path.expanduser().resolve(strict=False)
     if not file_path.is_file():
@@ -91,14 +113,7 @@ def load_config(file_path: Path) -> Config:
     provider_overrides = parse_provider_overrides(document.get("providers"))
     registry = ProviderRegistry.from_overrides(provider_overrides)
 
-    skills: dict[str, Skill] = {}
-    for raw_name, raw_settings in _mapping(document.get("skills"), "skills").items():
-        name = _validate_skill_name(raw_name, "skill name")
-        values = _mapping(raw_settings, f"skills.{name}")
-        skills[name] = Skill(
-            name=name,
-            path=_path_from(file_path.parent, values.get("path"), f"skills.{name}.path"),
-        )
+    skills = _discover_skills(file_path.parent)
 
     projects: dict[str, Project] = {}
     for raw_name, raw_settings in _mapping(document.get("projects"), "projects").items():
