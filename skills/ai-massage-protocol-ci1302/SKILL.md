@@ -36,6 +36,7 @@ ESP32 处于在线模式时，通过 CI1302 UART1 TX 发送 `A5 A5 5A 5A 01 00 1
 
 参考文档：`references/rx-commands.md`
 参考文档：`references/L01-IOT-ESP32-BT_V1.0.1.pdf`
+参考文档：`references/streaming-playback-sequence.md`
 
 ### `rx-commands`文档列介绍：
 
