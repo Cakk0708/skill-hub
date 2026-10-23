@@ -18,7 +18,9 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - ai-massage-build-flash
       - ai-massage-comment-standards
       - ai-massage-laya-massage-intent
@@ -52,7 +54,9 @@ projects:
       - mes-frontend-tabbar
       - mes-frontend-test
       - mes-frontend-list-design
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - op-ssh-key
     providers:
       codex:
@@ -67,7 +71,9 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - op-ssh-key
     providers:
       codex:
@@ -76,3 +82,17 @@ projects:
         enabled: false
       antigravity:
         enabled: false
+  duolingo:
+    path: ${DUOLINGO_PROJECT}
+    skills:
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
+      - op-ssh-key
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: true
