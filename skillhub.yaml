@@ -88,7 +88,14 @@ projects:
       - docker-production-standard
       - docker-develop-standard
       - docker-deployment-requirements
+      - docs-flow
+      - docs-plan
+      - docs-readme
       - op-ssh-key
+      - django-test
+      - django-backend-api
+      - django-backend-schema
+      - django-api-docs
     providers:
       codex:
         enabled: true
@@ -105,6 +112,9 @@ projects:
       - ui-control-protocol-create
       - ui-control-protocol-update
       - ui-semantic-locator
+      - docs-flow
+      - docs-plan
+      - docs-readme
       - op-ssh-key
       - pms-lay-out-code-h5
       - pms-terminology
