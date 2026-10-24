@@ -18,7 +18,9 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - ai-massage-build-flash
       - ai-massage-comment-standards
       - ai-massage-laya-massage-intent
@@ -52,7 +54,9 @@ projects:
       - mes-frontend-tabbar
       - mes-frontend-test
       - mes-frontend-list-design
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - op-ssh-key
     providers:
       codex:
@@ -67,8 +71,53 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - docker-deployment-standard
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
       - op-ssh-key
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: false
+  duolingo:
+    path: ${DUOLINGO_PROJECT}
+    skills:
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
+      - docs-flow
+      - docs-plan
+      - docs-readme
+      - op-ssh-key
+      - django-test
+      - django-backend-api
+      - django-backend-schema
+      - django-api-docs
+    providers:
+      codex:
+        enabled: true
+      claude:
+        enabled: false
+      antigravity:
+        enabled: true
+  pms:
+    path: ${PMS_PROJECT}
+    skills:
+      - docker-production-standard
+      - docker-develop-standard
+      - docker-deployment-requirements
+      - ui-control-protocol-create
+      - ui-control-protocol-update
+      - ui-semantic-locator
+      - docs-flow
+      - docs-plan
+      - docs-readme
+      - op-ssh-key
+      - pms-lay-out-code-h5
+      - pms-terminology
     providers:
       codex:
         enabled: true
