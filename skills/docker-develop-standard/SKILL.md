@@ -14,12 +14,12 @@ project/
 ├── service-a/                   # 服务源码与对应 Dockerfile
 ├── service-b/
 ├── deploy/
-│   ├── compose/
-│   │   ├── compose.yaml          # 多环境共用的服务定义（需要时）
-│   │   ├── compose.dev.yaml      # 本地开发差异
-│   │   └── compose.prod.yaml     # 生产差异
+│   ├── docker-compose.yaml          # 多环境共用的服务定义（需要时）
+│   ├── docker-compose.dev.yaml      # 本地开发差异
+│   ├── docker-compose.prod.yaml     # 生产差异
 │   ├── nginx/                    # 项目维护的代理配置（需要时）
 │   └── scripts/                  # 可重复执行的本地构建与启动脚本
+│       └── start.sh              
 ├── .env.example
 ├── .env.prod.example
 └── .gitignore
@@ -38,3 +38,7 @@ project/
 开发数据库、上传目录和模型缓存应有明确的数据生命周期。绑定到仓库外的目录或命名 volume 都可以；需要重建容器时，不要顺带删除仍需保留的数据卷。
 
 Compose 命令应显式使用项目约定的 project name、env file 和 Compose 文件集合，避免从不同目录启动后生成另一套网络或 volume。
+
+## 其他要求
+
+- **端口抛出**: 涉及`mysql` `postgrasql`需额外抛出端口避开系统端口以便于查看数据
