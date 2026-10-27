@@ -52,7 +52,7 @@
 | 23 | `00 17` | 关闭零重力   | 好的，正在上升    | `5A A5 14 13 00 00 00 00 00 00 00 00 00 00 00 00 00 00 26`    |
 | 26 | `00 1A` | 增大音量   | 好的，已增大    |  special handling  |
 | 27 | `00 1B` | 减小音量   | 好的，已减小    |  special handling  |
-| 28 | `00 09` | 对话断开   | 好的，我先退下啦    |  special handling  |
+| 28 | `00 1C` | 在线模式   | 好的，正在配网请稍后    |  special handling  |
 
 ### 系统指令
 
@@ -61,10 +61,12 @@
 | 1 | `02 01` | 开始播放网络音频指令   |  |  |
 | 2 | `02 0a` | 语音芯片获取后续播放数据指令   |  |  |
 | 3 | `01 08` | 检测到 vad start   |  |  |
+| 4 | `00 09` | 对话断开   | 好的，我先退下啦  |   |
 
 code 10/11 仍分别表示气囊力度增加/减少。ESP32 将其映射为语义化的相对调节，经过 `MassageController` 后由岭阳 `BoardAdapter` 编码为功能码 `0x55`、键值 `0x0B`/`0x0C`；接收层不得直接透传原始主板帧。上表帧仅表示最终适配器输出。
 
 ## special handling
 
-- **00 1A**: 查询当前音量（见 tx-commands.md.指令列表.index.3 ）后根据当前音量递增
-- **00 1B**: 查询当前音量（见 tx-commands.md.指令列表.index.3 ）后根据当前音量递减
+- **00 1A**: 查询当前音量（见 tx-commands.md.指令列表.index.3 ）后根据当前音量递增；
+- **00 1B**: 查询当前音量（见 tx-commands.md.指令列表.index.3 ）后根据当前音量递减；
+- **00 1C**: 该命中枚举对应独立系统命令 `network.reconnect_saved`，不得进入按摩语义白名单。命令表中的 `00 1C` 表示 hit enum `0x001C`；在 `0x0101` 离线命令事件中按小端编码时，payload 字节为 `1C 00`。仅当 ESP32 处于 `kDeviceStateWifiConfiguring`、热点配置 AP 正在运行且已有已保存 Wi-Fi 凭据时，停止配置 AP；现有 `ConfigModeExit` 回调会发起 Station 重连，并播放 `voice_reply_wifi_reconnect_started.ogg`（源音频为“好的，正在配网请稍后.mp3”）。若没有保存凭据或设备不在活动配网状态，播放 `voice_reply_wifi_connect_required.ogg`（源音频为“请先将设备连接到WiFi.mp3”），不停止配置 AP、不发起连接；无凭据时继续留在配网状态。若 Wi-Fi 已连接则忽略，避免播放错误的成功反馈。

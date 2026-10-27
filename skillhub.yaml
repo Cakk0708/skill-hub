@@ -92,6 +92,7 @@ projects:
       - docs-plan
       - docs-readme
       - op-ssh-key
+      - pen-design-create
       - django-test
       - django-backend-api
       - django-backend-schema
