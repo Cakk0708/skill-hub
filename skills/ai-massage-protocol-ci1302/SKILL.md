@@ -5,6 +5,19 @@ description: |
   分析 CI1302 UART 协议，解析十六进制帧、日志中的 RX/TX 报文、功能码、键值。
 ---
 
+
+## 协议文档
+
+- **接收协议表**: 
+  - path: `references/rx-commands.md`
+  - description: 接收协议指令表，用于 esp32 端 rx 口被动接收 ci1302 指令清单。
+- **发送协议表**: 
+  - path: `references/tx-commands.md`
+  - description: 发送协议指令表，用于 esp32 端 tx 口主动向 ci1302 发去指令清单。
+- **网络流媒体播放交互时序**: 
+  - path: `references/streaming-playback-sequence.md`
+  - description: 用于澄清 esp32 与 ci1302 音频播放交互关系。
+
 ## 功能介绍
 
 CI1302 与 ESP32 通过 UART1 沟通以实现离线指令命中、在线人声 PCM 对话
@@ -29,14 +42,8 @@ ESP32 处于在线模式时，通过 CI1302 UART1 TX 发送 `A5 A5 5A 5A 01 00 1
 
 ### 离线
 
-离线音频的答复句必须遵循协议文档列“播报语句”内容使用`xiaozhi-esp32/main/boards/l01-iot-ci1302/assets/`下的合适音频做答复
+离线音频的答复句必须遵循协议文档列“播报语句”内容使用`firmware/esp32-s3/boards/l01-iot-ci1302/assets/`下的合适音频做答复
 
-
-## 协议文档
-
-参考文档：`references/rx-commands.md`
-参考文档：`references/L01-IOT-ESP32-BT_V1.0.1.pdf`
-参考文档：`references/streaming-playback-sequence.md`
 
 ### `rx-commands`文档列介绍：
 
@@ -44,5 +51,5 @@ ESP32 处于在线模式时，通过 CI1302 UART1 TX 发送 `A5 A5 5A 5A 01 00 1
 - **command**: ci1302 发来的命中命令
 - **content**: 被 CI1302 唤醒的命令词
 - **reply text**: CI1302 命令词命中后答复语句，一般用于 ESP32 发送岭阳按摩主板按摩指令 UART0 RX 响应成功后将储存对应答复音频提取后转发给 CI1302 实现播放音频形成播报语句
-- **send command**: 用于 ESP32 在命令词命中后发送给 UART0 TX 的岭阳按摩主板的按摩指令（原样发送）
+- **send command**: 对应命令最终产生的岭阳主板指令参考。ESP32 必须先将 CI1302 命中映射为语义动作并交给 `MassageController`，再由 `BoardAdapter` 编码；接收层不得原样直发此字段中的裸帧。
 
