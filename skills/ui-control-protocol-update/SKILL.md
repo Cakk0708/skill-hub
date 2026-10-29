@@ -2,13 +2,13 @@
 name: ui-control-protocol-update
 description: |
   当用户说“更新UI控制协议”时触发此技能
-  基于已有元素布局说明文档和当前页面结构变化，做增量更新，保持路径稳定，避免全量重写
+  基于 docs/ui-protocol/{页面名}.md 和当前页面结构变化，做增量更新，保持路径稳定，避免全量重写
 ---
 
 # 常用概念
 
-- **地图文档**: `docs/ui-protocol/map.md `
-- **元素布局说明文档**: 有地图文档指向的 `docs/ui-protocol/layouts/` 路径下的对应元素布局说明文档
+- **协议目录**: `docs/ui-protocol/`
+- **页面协议文件**: `docs/ui-protocol/{页面名}.md`，每个页面单独维护一份协议
 
 # UI 控制协议更新 Skill
 
@@ -18,16 +18,16 @@ description: |
 
 - 更新UI控制协议
 - 同步UI协议
-- 根据当前页面调整更新 design.md
+- 根据当前页面结构调整已有页面协议文件
 
 你需要：
 
-1. 读取已有元素布局说明文档
+1. 在 `docs/ui-protocol/` 中定位并读取该页面已有的协议文件
 2. 理解当前页面结构（来自本次对话 / 最新描述）
 3. 对比新旧结构差异
 4. 仅更新发生变化的部分
 5. 保持已有路径和命名稳定
-6. 将更新后的结果写回元素布局说明文档
+6. 将变化增量写回该页面协议文件
 
 ---
 
@@ -37,7 +37,7 @@ description: |
 
 绝对不要：
 
-* 重新生成整个元素布局说明文档
+* 重新生成整个页面协议文件
 * 覆盖所有节点
 * 重排所有结构
 
@@ -98,10 +98,17 @@ description: |
 
 ### 第一步：读取现有协议
 
-必须先读取：
+必须先在 `docs/ui-protocol/` 中查找与当前页面对应的 Markdown 协议文件，并读取该文件。文件名使用页面路由或页面组件名的 kebab-case 形式，例如 `login.md`、`user-list.md`；若名称可能冲突，使用完整路由对应的唯一文件名。
+
+如果对应文件不存在：
+
+* 该页面尚无协议，改用 `ui-control-protocol-create` 创建 `docs/ui-protocol/{页面名}.md`
+* 不要创建 `map.md`、`layouts/` 或集中式 `design.md`
+
+已有文件必须先读取：
 
 ```text
-docs/ui-protocol/design.md
+docs/ui-protocol/{页面名}.md
 ```
 
 提取：
@@ -188,14 +195,10 @@ docs/ui-protocol/design.md
 
 ### 第五步：写回文件
 
-```bash
-mkdir -p .codex/docs
-```
-
-覆盖写入：
+确保协议目录存在，并将增量更新写回原页面协议文件：
 
 ```text
-.codex/docs/design.md
+docs/ui-protocol/{页面名}.md
 ```
 
 ---
@@ -335,7 +338,7 @@ restart_button
 
 当本 skill 执行完成后：
 
-* 元素布局说明文档被正确更新
+* 对应的 `docs/ui-protocol/{页面名}.md` 被正确更新
 * 未变更部分完全保持不动
 * 新增/删除/修改准确反映
 * 所有路径仍然可用
@@ -352,7 +355,7 @@ restart_button
   👉 用于持续维护（本 skill）
 
 * `ui-semantic-locator`
-  👉 用于基于地图文档定位代码
+  👉 用于基于页面协议文件定位代码
 
 ---
 

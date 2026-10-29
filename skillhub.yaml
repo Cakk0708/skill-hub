@@ -85,6 +85,7 @@ projects:
   duolingo:
     path: ${DUOLINGO_PROJECT}
     skills:
+      - _shared
       - docker-production-standard
       - docker-develop-standard
       - docker-deployment-requirements
@@ -92,7 +93,11 @@ projects:
       - docs-plan
       - docs-readme
       - op-ssh-key
-      - pen-design-create
+      - pen-design
+      - pen-implement
+      - ui-control-protocol-create
+      - ui-control-protocol-update
+      - ui-semantic-locator
       - django-test
       - django-backend-api
       - django-backend-schema

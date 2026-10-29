@@ -2,7 +2,7 @@
 name: ai-massage-protocol-7ctft
 description: |
   岭阳 7CTFT 协议文档
-  涉及“7CTFT”、“岭阳屏幕文字协议”、“5B A6”帧或交互展示屏协议内容时触发
+  涉及"7CTFT"、"岭阳屏幕文字协议"、"5B A6"帧或交互展示屏协议内容时触发
 ---
 
 ## 协议概述

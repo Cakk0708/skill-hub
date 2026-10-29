@@ -1,6 +1,8 @@
 ---
 name: ai-massage-utterance-normalizer
-description: 为 ASR 最终识别文本新增或维护按摩领域窄范围归一词；当用户要求修正按摩领域 ASR 相近词、补充归一词或维护归一化规则时使用。
+description: >
+  为 ASR 最终识别文本新增或维护按摩领域窄范围归一词；
+  当用户要求修正按摩领域 ASR 相近词、补充归一词或维护归一化规则时使用。
 ---
 
 # 按摩领域归一词维护

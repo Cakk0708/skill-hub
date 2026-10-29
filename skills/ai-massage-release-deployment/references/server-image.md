@@ -1,9 +1,9 @@
-# server 镜像和基础层规则
+# server 基础镜像与应用镜像
 
-仅在 `TARGET=server` 或 `TARGET=all` 时读取。本规则适用于 minimal 与 full 两种 profile。
+构建上下文为 backend/device-server/。Dockerfile-base 包含系统依赖、Python 包及 CPU PyTorch；Dockerfile 只复制应用源码与内嵌 MassageAgent。生产基础镜像采用固定引用，上游 Python parent 使用核验的 linux/amd64 digest。
 
-两个 profile 的 xiaozhi-server 均遵循基础层与源码层分离：基础层包含 Debian 系统包、Python 依赖和 PyTorch；源码层从当前工作区复制服务端代码。代码发布默认只重建源码层，不因每次发布重复下载相同依赖。
+基础层记录引用、Image ID、平台、创建时间、构建来源及依赖输入。Dockerfile-base、requirements.txt、系统依赖或兼容门禁变化时核对并重建；纯源码发布复用已验证的固定基础层，不为应用发布重复重打基础镜像标签。来源无法核实时停止，不用 latest 或删除断言绕过门禁。
 
-基础镜像策略记录固定引用、Image ID、创建时间、来源提交或等价来源、真实依赖版本和 `linux/amd64` 平台。只有基础 Dockerfile、系统/Python 依赖、锁定方式、兼容性或有效期门禁发生变化时才重建基础层；来源或输入事实无法核对时停止，不得用未知镜像或 `latest` 替代。
+构建和版本/API 检查使用 当前发布文档（仓库根目录下的 `backend/device-server/docs/docker-production-deployment.md`） 中的具体命令。核对 torch/torchaudio CPU 版本、SQLAlchemy/asyncmy/PyMySQL 和 ping 方法签名；应用镜像检查 core.storage、core.storage.models 导入及本次变更回归。
 
-复用基础镜像不等于跳过验收，仍须重新执行版本、关键 API、平台、来源和 `core.storage` 导入检查。外部源连续失败时，只有在已满足复用条件或取得用户明确同意的受控例外下才能继续；不得删除断言、放宽版本或猜测依赖未变化。
+只从经过审查的构建上下文复制代码，运行时配置和模型挂载遵循 .dockerignore 与目标 Compose。发现配置中已有凭据时，不输出其值；先核对配置来源、镜像构建范围及运行时覆盖关系，保持现有功能，未经明确授权不删除或清空配置值。

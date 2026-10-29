@@ -1,10 +1,9 @@
-# skill-hub
-
 `skill-hub` 是一个本地 Python CLI，用一个目录维护 Skill，并通过目录链接把它们分发到多个项目。
 
 ## 设计
 
 - `skills/` 是 Skill 的唯一维护位置。每个 Skill 是一个目录，入口文件为 `SKILL.md`，可包含脚本、参考资料和其他资源。
+- `rules/` 是规则的唯一维护位置。每个规则是一个目录，项目配置了该 rules 后 sync 检查会自动对项目 rules 做规则检查，若没有该 rule 块将会填入，若已有该 rule 但未配置，将被删除。
 - `skillhub.yaml` 自动发现 `skills/` 下的一级 Skill 目录，并记录项目路径、Provider 目录，以及项目使用的公共和专属 Skill。
 - 每个项目里的目标项是指向 Skill Hub 源目录的链接。编辑源 Skill 后，链接到它的项目会立即看到更新。
 - Provider 通过集中注册表定义，内置 `codex`、`claude`、`antigravity`，配置也可增加自定义 Provider。
@@ -139,4 +138,6 @@ Provider 默认目录依据各工具的项目级 Skill 文档：
 - [Codex：Where Codex loads local skills](https://developers.openai.com/codex/skills)
 - [Claude Code：Choose where skills load](https://code.claude.com/docs/en/skills)
 - [Google Antigravity：Agent skills](https://antigravity.google/docs/skills)
-# skill-hub
+
+
+

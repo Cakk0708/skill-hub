@@ -1,4 +1,4 @@
 interface:
   display_name: "服务端生产发布"
   short_description: "按组件目标安全交付 xiaozhi 服务端"
-  default_prompt: "Use $release-deployment to inspect the production topology, select minimal/full and server/manager_bundle/all targets, then build, deliver, deploy, verify, roll back, and record only the authorized xiaozhi-esp32-server components."
+  default_prompt: "Use $ai-massage-release-deployment with $docker-production-standard to design the target production layout and root .env.prod, inspect legacy runtime only as migration and rollback evidence, then build, deliver, deploy, validate and record the selected standalone server, manager-api and manager-web images."

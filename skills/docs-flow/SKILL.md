@@ -1,7 +1,7 @@
 ---
 name: docs-flow
 description: 
-  用户涉及”构造流程图“、”构造时序图“、”构造Mermaid图表“时触发
+  用户涉及"构造流程图"、"构造时序图"、"构造Mermaid图表"、"Mermaid"、"流程图"时触发
   为 docs/interaction-flows 下的文件做创建、重命名、检查或更新
 ---
 
