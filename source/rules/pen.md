@@ -1,4 +1,4 @@
-## UI Development Rules
+## pencli UI Development Rules
 
 - 所有 UI 设计稿统一存放在 `{root}/pen/`。
 - 创建或修改 UI 设计稿时，使用 `pen-design`。
