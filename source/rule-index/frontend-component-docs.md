@@ -1,7 +1,7 @@
 ---
 title: 前端组建维护文档
 description: 组件目录文档同步维护
-applicable_path: "*/src/components/**"
+applicable_path: "**/src/components/**"
 ---
 
 ## 组件文档同步维护规范

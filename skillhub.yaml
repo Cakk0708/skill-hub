@@ -36,6 +36,10 @@ projects:
       - ai-massage-release-deployment
       - ai-massage-utterance-normalizer
       - op-ssh-key
+    rule_index:
+      - python-code-style
+      - python-comment-standards
+      - python-import-standards
     providers:
       codex:
         enabled: true
@@ -53,7 +57,6 @@ projects:
       - ui-control-protocol-create
       - ui-control-protocol-update
       - django-backend-api
-      - django-backend-schema
       - django-api-docs
       - django-test
       - mes-frontend-ui
@@ -64,6 +67,10 @@ projects:
       - docker-develop-standard
       - docker-deployment-requirements
       - op-ssh-key
+    rule_index:
+      - python-code-style
+      - python-comment-standards
+      - python-import-standards
     providers:
       codex:
         enabled: true
@@ -106,12 +113,14 @@ projects:
       - ui-semantic-locator
       - django-test
       - django-backend-api
-      - django-backend-schema
       - django-api-docs
     rules:
       - pen
     rule_index:
       - frontend-component-docs
+      - python-code-style
+      - python-comment-standards
+      - python-import-standards
     providers:
       codex:
         enabled: true
