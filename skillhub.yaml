@@ -36,6 +36,8 @@ projects:
       - ai-massage-release-deployment
       - ai-massage-utterance-normalizer
       - op-ssh-key
+    rules:
+      - ai-massage
     rule_index:
       - python-code-style
       - python-comment-standards

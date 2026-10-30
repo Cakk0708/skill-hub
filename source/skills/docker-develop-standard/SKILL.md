@@ -1,5 +1,5 @@
 ---
-name: docker-local-project-layout
+name: docker-develop-standard
 description: >
   规定 Docker 项目的本地源码仓库、Dockerfile、Compose 和环境模板布局。
   设计或整理本地开发仓库的 Docker 文件结构时使用。
@@ -38,6 +38,15 @@ project/
 开发数据库、上传目录和模型缓存应有明确的数据生命周期。绑定到仓库外的目录或命名 volume 都可以；需要重建容器时，不要顺带删除仍需保留的数据卷。
 
 Compose 命令应显式使用项目约定的 project name、env file 和 Compose 文件集合，避免从不同目录启动后生成另一套网络或 volume。
+
+## Compose 环境差异
+
+- 当项目使用 `docker-compose.yaml` 和环境覆盖文件时，基础文件只放跨环境共用的服务定义与配置。
+- 环境专属的 `command`、`entrypoint` 应放在对应环境文件中。开发专属命令（如 `npm run dev`、Django `runserver`、启动前安装开发依赖）放在 `docker-compose.dev.yaml`，不要写入共用文
+件。
+- 开发环境的源码挂载、热更新配置和宿主机开发端口也放在 `docker-compose.dev.yaml`；生产专属的启动命令和配置放在生产覆盖文件中。
+- 若项目只有一个本地开发 Compose 文件、没有多环境覆盖，则可直接在该文件中配置开发命令；不必仅为放置 `command` 而新增覆盖文件。
+- 修改服务时应检查 Dockerfile 的默认 `CMD` 与 Compose 合并后的实际命令，避免开发命令意外成为共用默认值。
 
 ## 其他要求
 
