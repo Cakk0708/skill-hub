@@ -69,3 +69,49 @@ def parse_provider_overrides(value: object) -> dict[str, Path]:
         overrides[name] = Path(skill_dir).expanduser()
     return overrides
 
+
+def parse_provider_rule_dirs(value: object) -> dict[str, Path]:
+    """Read optional provider rule document paths from the provider registry."""
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ConfigError("'providers' must be a mapping of provider names to settings")
+
+    rule_dirs: dict[str, Path] = {}
+    for name, settings in value.items():
+        if not isinstance(name, str) or not name.strip():
+            raise ConfigError("provider names must be non-empty strings")
+        if not isinstance(settings, dict):
+            raise ConfigError(f"provider '{name}' settings must be a mapping")
+        rule_dir = settings.get("rule_dir")
+        if rule_dir is None:
+            continue
+        if not isinstance(rule_dir, str) or not rule_dir.strip():
+            raise ConfigError(f"provider '{name}' rule_dir must be a non-empty path string")
+        rule_dirs[name] = Path(rule_dir).expanduser()
+    return rule_dirs
+
+
+def parse_provider_rule_index_dirs(value: object) -> dict[str, Path]:
+    """Read optional provider directories for linked rule-index documents."""
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ConfigError("'providers' must be a mapping of provider names to settings")
+
+    rule_index_dirs: dict[str, Path] = {}
+    for name, settings in value.items():
+        if not isinstance(name, str) or not name.strip():
+            raise ConfigError("provider names must be non-empty strings")
+        if not isinstance(settings, dict):
+            raise ConfigError(f"provider '{name}' settings must be a mapping")
+        rule_index_dir = settings.get("rule_index_dir")
+        if rule_index_dir is None:
+            continue
+        if not isinstance(rule_index_dir, str) or not rule_index_dir.strip():
+            raise ConfigError(
+                f"provider '{name}' rule_index_dir must be a non-empty path string"
+            )
+        rule_index_dirs[name] = Path(rule_index_dir).expanduser()
+    return rule_index_dirs
+

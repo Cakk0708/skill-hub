@@ -4,39 +4,41 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from skill_hub.config import load_config
-from skill_hub.errors import LinkSafetyError
-from skill_hub.links import LinkState, SystemLinkStrategy
-from skill_hub.models import Project, ProjectProvider
-from skill_hub.operations import build_plan, doctor, status
-from skill_hub.providers import ProviderRegistry
+from apps.config import load_config
+from apps.errors import LinkSafetyError
+from apps.links import LinkState, SystemLinkStrategy
+from apps.models import Project, ProjectProvider
+from apps.operations import build_plan, doctor, status
+from apps.providers import ProviderRegistry
 
 
 class ConfigTests(unittest.TestCase):
     def test_discovers_all_immediate_skill_directories_on_each_load(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "skills" / "zeta").mkdir(parents=True)
-            (root / "skills" / "alpha").mkdir(parents=True)
-            (root / "skills" / "README.md").write_text("not a skill", encoding="utf-8")
+            (root / "source" / "skills" / "zeta").mkdir(parents=True)
+            (root / "source" / "skills" / "alpha").mkdir(parents=True)
+            (root / "source" / "skills" / "README.md").write_text(
+                "not a skill", encoding="utf-8"
+            )
             config_path = root / "skillhub.yaml"
             config_path.write_text("projects: {}\n", encoding="utf-8")
 
             first_config = load_config(config_path)
-            (root / "skills" / "new-skill").mkdir()
+            (root / "source" / "skills" / "new-skill").mkdir()
             second_config = load_config(config_path)
 
             self.assertEqual(tuple(first_config.skills), ("alpha", "zeta"))
             self.assertEqual(tuple(second_config.skills), ("alpha", "new-skill", "zeta"))
             self.assertEqual(
                 second_config.skills["new-skill"].path,
-                (root / "skills" / "new-skill").resolve(),
+                (root / "source" / "skills" / "new-skill").resolve(),
             )
 
     def test_parses_configuration_and_resolves_relative_paths(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "skills" / "shared").mkdir(parents=True)
+            (root / "source" / "skills" / "shared").mkdir(parents=True)
             (root / "skillhub.yaml").write_text(
                 """settings:\n  link_mode: auto\nprojects:\n  app:\n    path: ../app\n    skills: [shared]\n""",
                 encoding="utf-8",
@@ -44,7 +46,10 @@ class ConfigTests(unittest.TestCase):
 
             config = load_config(root / "skillhub.yaml")
 
-            self.assertEqual(config.skills["shared"].path, (root / "skills" / "shared").resolve())
+            self.assertEqual(
+                config.skills["shared"].path,
+                (root / "source" / "skills" / "shared").resolve(),
+            )
             self.assertEqual(config.projects["app"].path, (root.parent / "app").resolve())
             self.assertEqual(config.projects["app"].skills, ("shared",))
 
@@ -108,7 +113,7 @@ class LinkTests(unittest.TestCase):
         strategy = SystemLinkStrategy()
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "skills" / "one"
+            source = root / "source" / "skills" / "one"
             target = root / "project" / ".agents" / "skills" / "one"
             source.mkdir(parents=True)
             try:
@@ -124,7 +129,7 @@ class LinkTests(unittest.TestCase):
         strategy = SystemLinkStrategy()
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "skills" / "one"
+            source = root / "source" / "skills" / "one"
             target = root / "project" / ".agents" / "skills" / "one"
             source.mkdir(parents=True)
             target.mkdir(parents=True)
@@ -139,8 +144,8 @@ class LinkTests(unittest.TestCase):
     def test_doctor_warns_when_providers_share_a_directory_with_different_skills(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            (root / "skills" / "shared").mkdir(parents=True)
-            (root / "skills" / "codex-only").mkdir(parents=True)
+            (root / "source" / "skills" / "shared").mkdir(parents=True)
+            (root / "source" / "skills" / "codex-only").mkdir(parents=True)
             project_path = root / "project"
             project_path.mkdir()
             (root / "skillhub.yaml").write_text(
@@ -155,7 +160,7 @@ class LinkTests(unittest.TestCase):
     def test_plan_keeps_link_destination_after_link_exists(self) -> None:
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            source = root / "skills" / "shared"
+            source = root / "source" / "skills" / "shared"
             project_path = root / "project"
             source.mkdir(parents=True)
             project_path.mkdir()

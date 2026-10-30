@@ -1,7 +1,7 @@
 ---
 title: 前端组建维护文档
 description: 组件目录文档同步维护
-applicable_path: "frontend/customer/src/components/**"
+applicable_path: "*/src/components/**"
 ---
 
 ## 组件文档同步维护规范
@@ -10,15 +10,15 @@ applicable_path: "frontend/customer/src/components/**"
 
 本规则适用于以下目录及其所有子目录：
 
-- `frontend/customer/src/components/`
+- `*/src/components/`
 
 ### 2. 强制执行规则
 
-当 Codex 对上述目录内的文件进行**新增、修改、删除、重命名或移动**操作时，必须同步检查并维护该目录下的 `README.md` 文件。
+当 AGENT 对上述目录内的文件进行**新增、修改、删除、重命名或移动**操作时，必须同步检查并维护该目录下的 `README.md` 文件。
 
 具体要求如下：
 
-1. **修改前阅读**：执行代码修改前，必须先阅读 `frontend/customer/src/components/README.md`，了解现有组件结构、职责及文档约定。
+1. **修改前阅读**：执行代码修改前，必须先阅读 `*/src/components/README.md`，了解现有组件结构、职责及文档约定。
 2. **缺失时创建**：如果 `README.md` 不存在，必须创建该文件，并根据当前目录的实际内容编写说明。
 3. **修改后检查**：完成代码修改后，必须检查 `README.md` 是否准确反映当前组件的结构与功能。
 4. **按需同步更新**：当修改涉及以下内容时，必须更新 `README.md`：
@@ -40,7 +40,7 @@ applicable_path: "frontend/customer/src/components/**"
 
 ### 4. 任务完成要求
 
-凡涉及适用目录的代码变更，Codex 在结束任务前必须：
+凡涉及适用目录的代码变更，AGENT 在结束任务前必须：
 
 1. 确认已经阅读或创建 `README.md`。
 2. 确认已根据代码变更完成必要的文档同步。

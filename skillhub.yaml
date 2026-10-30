@@ -1,15 +1,21 @@
 # Project paths are relative to this file unless absolute.
-# Skills are discovered from the immediate subdirectories of skills/.
+# Skills are discovered from the immediate subdirectories of source/skills/.
 settings:
   link_mode: auto
 
 providers:
   codex:
     skill_dir: .codex/skills
+    rule_index_dir: .codex/rules
+    rule_dir: AGENTS.md
   claude:
     skill_dir: .claude/skills
+    rule_index_dir: .claude/rules
+    rule_dir: CLAUDE.md
   antigravity:
     skill_dir: .agents/skills
+    rule_index_dir: .agents/rules
+    rule_dir: GEMINI.md
 
 projects:
   ai-massage:
@@ -102,6 +108,10 @@ projects:
       - django-backend-api
       - django-backend-schema
       - django-api-docs
+    rules:
+      - pen
+    rule_index:
+      - frontend-component-docs
     providers:
       codex:
         enabled: true

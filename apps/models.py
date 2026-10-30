@@ -33,6 +33,8 @@ class Project:
     path: Path
     skills: tuple[str, ...] = ()
     providers: Mapping[str, ProjectProvider] = field(default_factory=dict)
+    rules: tuple[str, ...] = ()
+    rule_indexes: tuple[str, ...] = ()
 
     def skills_for(self, provider_name: str) -> tuple[str, ...]:
         """Merge shared and provider-specific skills while preserving order."""
@@ -56,6 +58,8 @@ class Config:
     provider_overrides: Mapping[str, Path]
     skills: Mapping[str, Skill]
     projects: Mapping[str, Project]
+    provider_rule_dirs: Mapping[str, Path] = field(default_factory=dict)
+    provider_rule_index_dirs: Mapping[str, Path] = field(default_factory=dict)
 
     @property
     def root(self) -> Path:

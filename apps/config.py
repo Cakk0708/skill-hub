@@ -10,7 +10,12 @@ from dotenv import load_dotenv
 
 from .errors import ConfigError
 from .models import Config, Project, ProjectProvider, Skill
-from .providers import ProviderRegistry, parse_provider_overrides
+from .providers import (
+    ProviderRegistry,
+    parse_provider_overrides,
+    parse_provider_rule_index_dirs,
+    parse_provider_rule_dirs,
+)
 
 _ENVIRONMENT_VARIABLE = re.compile(
     r"\$(?:\{(?P<braced>[A-Za-z_][A-Za-z0-9_]*)\}|(?P<plain>[A-Za-z_][A-Za-z0-9_]*))"
@@ -72,9 +77,13 @@ def _validate_skill_name(name: object, label: str) -> str:
     return name
 
 
+def _rule_names(value: object, label: str) -> tuple[str, ...]:
+    return tuple(_validate_skill_name(name, label) for name in _names(value, label))
+
+
 def _discover_skills(root: Path) -> dict[str, Skill]:
-    """Discover skills from the immediate subdirectories of ``skills/``."""
-    skill_root = root / "skills"
+    """Discover skills from the immediate subdirectories of ``source/skills/``."""
+    skill_root = root / "source" / "skills"
     if not skill_root.exists():
         return {}
     if not skill_root.is_dir():
@@ -111,6 +120,8 @@ def load_config(file_path: Path) -> Config:
         raise ConfigError("settings.link_mode currently supports only 'auto'")
 
     provider_overrides = parse_provider_overrides(document.get("providers"))
+    provider_rule_dirs = parse_provider_rule_dirs(document.get("providers"))
+    provider_rule_index_dirs = parse_provider_rule_index_dirs(document.get("providers"))
     registry = ProviderRegistry.from_overrides(provider_overrides)
 
     skills = _discover_skills(file_path.parent)
@@ -149,6 +160,10 @@ def load_config(file_path: Path) -> Config:
             name=name,
             path=_path_from(file_path.parent, values.get("path"), f"projects.{name}.path"),
             skills=_names(values.get("skills"), f"projects.{name}.skills"),
+            rules=_rule_names(values.get("rules"), f"projects.{name}.rules"),
+            rule_indexes=_rule_names(
+                values.get("rule_index"), f"projects.{name}.rule_index"
+            ),
             providers=project_providers,
         )
         for skill_name in (*project.skills, *(s for p in project_providers.values() for s in p.skills)):
@@ -164,4 +179,6 @@ def load_config(file_path: Path) -> Config:
         provider_overrides=provider_overrides,
         skills=skills,
         projects=projects,
+        provider_rule_dirs=provider_rule_dirs,
+        provider_rule_index_dirs=provider_rule_index_dirs,
     )
