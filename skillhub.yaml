@@ -38,6 +38,7 @@ projects:
       - op-ssh-key
     rules:
       - ai-massage
+      - pen
     rule_index:
       - python-code-style
       - python-comment-standards
@@ -58,7 +59,6 @@ projects:
       - ui-semantic-locator
       - ui-control-protocol-create
       - ui-control-protocol-update
-      - django-backend-api
       - django-api-docs
       - django-test
       - mes-frontend-ui
@@ -114,7 +114,6 @@ projects:
       - ui-control-protocol-update
       - ui-semantic-locator
       - django-test
-      - django-backend-api
       - django-api-docs
     rules:
       - pen
@@ -139,12 +138,28 @@ projects:
       - ui-control-protocol-create
       - ui-control-protocol-update
       - ui-semantic-locator
+      - django-api-docs
+      - django-test
       - docs-flow
       - docs-plan
       - docs-readme
       - op-ssh-key
       - pms-lay-out-code-h5
       - pms-terminology
+    rule_index:
+      - python-code-style
+      - python-comment-standards
+      - python-import-standards
+      - django-enums
+      - django-model
+      - django-views
+      - django-serializers
+      - django-migrations
+      - django-naming-conventions
+      - django-schema
+      - frontend-disign-input
+      - frontend-component-docs
+      - frontend-iconfont
     providers:
       codex:
         enabled: true
