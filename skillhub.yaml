@@ -59,7 +59,6 @@ projects:
       - ui-semantic-locator
       - ui-control-protocol-create
       - ui-control-protocol-update
-      - django-api-docs
       - django-test
       - mes-frontend-ui
       - mes-frontend-tabbar
@@ -114,7 +113,6 @@ projects:
       - ui-control-protocol-update
       - ui-semantic-locator
       - django-test
-      - django-api-docs
     rules:
       - pen
     rule_index:
@@ -122,6 +120,17 @@ projects:
       - python-code-style
       - python-comment-standards
       - python-import-standards
+      - django-enums
+      - django-model
+      - django-views
+      - django-serializers
+      - django-migrations
+      - django-naming-conventions
+      - django-schema
+      - django-api-docs
+      - frontend-disign-input
+      - frontend-component-docs
+      - frontend-iconfont
     providers:
       codex:
         enabled: true
@@ -138,7 +147,6 @@ projects:
       - ui-control-protocol-create
       - ui-control-protocol-update
       - ui-semantic-locator
-      - django-api-docs
       - django-test
       - docs-flow
       - docs-plan
