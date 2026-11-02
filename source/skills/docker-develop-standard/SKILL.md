@@ -19,7 +19,7 @@ project/
 │   ├── docker-compose.prod.yaml     # 生产差异
 │   ├── nginx/                    # 项目维护的代理配置（需要时）
 │   └── scripts/                  # 可重复执行的本地构建与启动脚本
-│       ├── run.sh                # 启动脚本根据选择配置细分重启每个端
+│       ├── run.sh                # 启动脚本根据选择配置细分重启每个端（start、stop、up、down）
 │       └── start.sh              # 完整的从 0 到 1 启动脚本
 ├── .env.example
 ├── .env.prod.example

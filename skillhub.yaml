@@ -53,6 +53,7 @@ projects:
   mes:
     path: ${MES_PROJECT}
     skills:
+      - _shared
       - docs-flow
       - docs-plan
       - docs-readme
@@ -60,18 +61,31 @@ projects:
       - ui-control-protocol-create
       - ui-control-protocol-update
       - django-test
-      - mes-frontend-ui
-      - mes-frontend-tabbar
-      - mes-frontend-test
-      - mes-frontend-list-design
       - docker-production-standard
       - docker-develop-standard
       - docker-deployment-requirements
       - op-ssh-key
+    rules:
+      - pen
     rule_index:
       - python-code-style
       - python-comment-standards
       - python-import-standards
+      - django-enums
+      - django-model
+      - django-views
+      - django-serializers
+      - django-migrations
+      - django-naming-conventions
+      - django-schema
+      - django-api-docs
+      - frontend-disign-input
+      - frontend-component-docs
+      - frontend-iconfont
+      - mes-frontend-detail-design
+      - mes-frontend-list-design
+      - mes-frontend-tabbar
+      - mes-frontend-test
     providers:
       codex:
         enabled: true
@@ -116,7 +130,6 @@ projects:
     rules:
       - pen
     rule_index:
-      - frontend-component-docs
       - python-code-style
       - python-comment-standards
       - python-import-standards

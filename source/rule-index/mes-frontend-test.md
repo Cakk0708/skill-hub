@@ -1,8 +1,7 @@
 ---
-name: mes-frontend-test
-description: 
-  MES前端页面测试工具
-  每当MES前端页面开发完成后，需要进行测试或将调整、新增测试用例时触发本技能
+title: MES前端测试规范
+description: MES前端页面测试工具
+applicable_path: "frontend/**"
 ---
 
 使用 Playwright + e2e 对前端页面做功能测试

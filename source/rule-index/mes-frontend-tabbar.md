@@ -1,8 +1,7 @@
 ---
-name: mes-frontend-tabbar
-description:
-  当涉及“等分标签页”、“标签页”、“tabbar”、“label-bar”时触发
-  本技能约定了项目标签页的基础使用规则
+title: MES前端标签页设计规范
+description: MES前端标签页的设计规范
+applicable_path: "frontend/**"
 ---
 
 项目里的 TabBar 主要是**全局路由标签栏**，又名为等分标签栏，标签名称是 EqualSplitTabBar；

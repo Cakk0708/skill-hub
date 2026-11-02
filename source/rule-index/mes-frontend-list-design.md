@@ -1,8 +1,7 @@
 ---
-name: mes-frontend-list-design
-description:
-  涉及 MES 前端列表页设计、实现或调整时触发。
-  本技能规范 DataPages 列表组件的职责与组合方式，统一列表页布局、交互和视觉规则。
+title: MES前端列表页设计规范
+description: MES前端列表页的设计规范
+applicable_path: "frontend/src/views/**"
 ---
 
 ## 页面结构与共享组件
@@ -166,3 +165,7 @@ MES 前端可复用的列表页组件集中在 `frontend/src/components/DataPage
 - **视觉对齐**: 要求设计内容遵循“视觉对齐”原则
 - **视觉一致性**: 要求设计内容遵循“视觉一致性”原则
 
+
+## 测试
+
+使用 Playwright + e2e 对前端页面做功能测试，遵循 mes-frontend-test 规范，测试用例存放在 `frontend/e2e/` 目录下
