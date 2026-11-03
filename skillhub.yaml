@@ -35,7 +35,7 @@ projects:
       - ai-massage-protocol-7ctft
       - ai-massage-release-deployment
       - ai-massage-utterance-normalizer
-      - op-ssh-key
+      - op-item-get
     rules:
       - ai-massage
       - pen
@@ -64,7 +64,7 @@ projects:
       - docker-production-standard
       - docker-develop-standard
       - docker-deployment-requirements
-      - op-ssh-key
+      - op-item-get
     rules:
       - pen
     rule_index:
@@ -102,7 +102,7 @@ projects:
       - docker-production-standard
       - docker-develop-standard
       - docker-deployment-requirements
-      - op-ssh-key
+      - op-item-get
     providers:
       codex:
         enabled: true
@@ -120,7 +120,7 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - op-ssh-key
+      - op-item-get
       - pen-design
       - pen-implement
       - ui-control-protocol-create
@@ -164,7 +164,7 @@ projects:
       - docs-flow
       - docs-plan
       - docs-readme
-      - op-ssh-key
+      - op-item-get
       - pms-lay-out-code-h5
       - pms-terminology
     rule_index:

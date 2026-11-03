@@ -1,7 +1,7 @@
 ---
 title: 前端输入框设计规范
 description: 前端输入框的设计规范
-applicable_path: "frontend/**"
+applicable_path: "frontend/**; frontend/**/**"
 ---
 
 ## 下拉框型

@@ -14,15 +14,29 @@ applicable_path: "*.py"
 ```python
 class InventoryService:
     """检查并管理库存。"""
-
-    def check_stock(self, product_id: int, quantity: int):
-        """确认指定商品有足够库存。"""
-        stock = self.get_stock(product_id)
-
-        # 此处需在写入订单前校验，避免并发请求导致超卖。
-        if stock < quantity:
-            raise OutOfStockError()
 ```
 
 - 不写“设置变量”“遍历列表”等重复代码含义的注释。
 - 仅在任务涉及的代码范围内补充或调整注释，不顺手改写无关模块的文档。
+- 必须使用中文作为代码注释
+- 函数注释必须包含传参介绍、返回值介绍
+
+```python
+def check_stock(product_id: int, quantity: int) -> Bool:
+    """
+    确认指定商品有足够库存。
+    
+    params:
+        product_id: 项目ID
+        quantity: 数量
+    
+    return: 比较结果
+    """
+    stock = get_stock(product_id)
+
+    # 此处需在写入订单前校验，避免并发请求导致超卖。
+    if stock < quantity:
+        raise OutOfStockError()
+
+    return stock == True
+```

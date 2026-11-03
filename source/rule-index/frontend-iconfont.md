@@ -1,7 +1,7 @@
 ---
 title: 前端图标字体规范
 description: 前端图标字体的设计规范
-applicable_path: "frontend/**"
+applicable_path: "frontend/**; frontend/**/**"
 ---
 
 ## 设计约定
