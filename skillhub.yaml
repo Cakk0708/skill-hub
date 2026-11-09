@@ -167,6 +167,8 @@ projects:
       - op-item-get
       - pms-lay-out-code-h5
       - pms-terminology
+      - pen-design
+      - pen-implement
     rule_index:
       - python-code-style
       - python-comment-standards
