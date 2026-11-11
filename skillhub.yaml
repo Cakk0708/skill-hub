@@ -183,6 +183,7 @@ projects:
       - frontend-disign-input
       - frontend-component-docs
       - frontend-iconfont
+      - mes-frontend-test
     providers:
       codex:
         enabled: true
