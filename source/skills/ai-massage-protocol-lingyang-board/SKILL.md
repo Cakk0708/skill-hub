@@ -9,7 +9,7 @@ description: |
 
 将一条原始报文解释为可核验的字段，并给出带证据等级的结论。只在 ESP32 岭阳适配层处理功能码、键值、字节偏移、ACK 和校验和；不要把这些细节泄漏到 MassageAgent、xiaozhi-server 或通用 UART 层。
 
-阅读和修改时遵守仓库根目录 `AGENTS.md` 的唯一主链路。若用户只是询问报文，只读检查即可；若用户要求修复解析，将修改限制在 `xiaozhi-esp32/main/massage/lingyang/`，并补充主机黄金报文测试。
+阅读和修改时遵守仓库根目录 `AGENTS.md` 的唯一主链路。若用户只是询问报文，只读检查即可；若用户要求修复解析，将修改限制在 `firmware/esp32-s3/main/massage/lingyang/`，并补充主机黄金报文测试。
 
 ## 证据等级
 
@@ -17,7 +17,7 @@ description: |
 
 1. **直接观测**：完整 UART TX/RX 原始字节、时间顺序、长度和校验和。
 2. **当前协议表**：优先检查用户提供的《岭阳电子二代APP通信协议及说明V0.35_20230911.xls》。它是历史协议资料，不自动等于当前真板事实。
-3. **当前代码与测试**：检查 `xiaozhi-esp32/main/massage/lingyang/` 和 `xiaozhi-esp32/tests/lingyang_protocol_test.cc`。
+3. **当前代码与测试**：检查 `firmware/esp32-s3/main/massage/lingyang/` 和 `xiaozhi-esp32/tests/lingyang_protocol_test.cc`。
 4. **历史代码或旧资料**：只能作为待验证参考，不得覆盖当前表格、当前适配器或真实回包。
 5. **推断**：使用“可能”“如果该主板复用此布局”等措辞；没有证据时保留 `unknown` 和原始编号。
 
@@ -148,11 +148,11 @@ checksum = sum(frame[0 .. length-2]) & 0xFF
 
 检查这些位置，避免只按日志文字推断：
 
-- `xiaozhi-esp32/main/massage/lingyang/lingyang_constants.h`：`kQueryValue = 0xFE`，`kTime = 0x10`。
-- `xiaozhi-esp32/main/massage/lingyang/lingyang_frame_decoder.h`：`function_code()` 读取 `bytes[3]`，`value()` 读取 `bytes[4]`，当前长度边界为 `kMinFrameLength=6`、`kMaxFrameLength=128`。
-- `xiaozhi-esp32/main/massage/lingyang/lingyang_board_adapter.cc`：RX 日志直接打印功能码、Byte 4 值和实际长度；普通命令 ACK token 由功能码和值构造，`0x4D/0xFE` 查询回帧只在此适配层生成。
+- `firmware/esp32-s3/main/massage/lingyang/lingyang_constants.h`：`kQueryValue = 0xFE`，`kTime = 0x10`。
+- `firmware/esp32-s3/main/massage/lingyang/lingyang_frame_decoder.h`：`function_code()` 读取 `bytes[3]`，`value()` 读取 `bytes[4]`，当前长度边界为 `kMinFrameLength=6`、`kMaxFrameLength=128`。
+- `firmware/esp32-s3/main/massage/lingyang/lingyang_board_adapter.cc`：RX 日志直接打印功能码、Byte 4 值和实际长度；普通命令 ACK token 由功能码和值构造，`0x4D/0xFE` 查询回帧只在此适配层生成。
 - `BuildStatusQueryPlan()` 当前发送 `0x3F/0xFE` 综合状态查询和 `0x02/0xFE` 电源查询，不要无依据地声称当前刷新链路发送了 `0x10/0xFE`。
-- `xiaozhi-esp32/main/massage/lingyang/lingyang_status_decoder.cc`：普通功能码继续要求 20 字节；`0x4D` 使用最小 6 字节并按 Byte 2 允许可变长度，只读取 Byte 4。功能码 `0x10` 仍使用 Byte 4 计算 `remaining_sec = value * 60`，不会读取 Byte 5/6；若真实主板发送 `10 FE 08 03`，必须把它标为当前解析逻辑与真板回包布局不一致，不能声称固件已正确解析成 8 分 3 秒。
+- `firmware/esp32-s3/main/massage/lingyang/lingyang_status_decoder.cc`：普通功能码继续要求 20 字节；`0x4D` 使用最小 6 字节并按 Byte 2 允许可变长度，只读取 Byte 4。功能码 `0x10` 仍使用 Byte 4 计算 `remaining_sec = value * 60`，不会读取 Byte 5/6；若真实主板发送 `10 FE 08 03`，必须把它标为当前解析逻辑与真板回包布局不一致，不能声称固件已正确解析成 8 分 3 秒。
 - `xiaozhi-esp32/tests/lingyang_protocol_test.cc`：覆盖 `0x4D` 的 `0x06/08/0A/0C/0E/10/12/14` 可变长度、`0/1/2` 值、长度一致性、校验和和状态映射；这些兼容形状测试不等于真板已发送。
 
 ## 输出格式
