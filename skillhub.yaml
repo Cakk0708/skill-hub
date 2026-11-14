@@ -180,6 +180,7 @@ projects:
       - django-migrations
       - django-naming-conventions
       - django-schema
+      - django-api-docs
       - frontend-disign-input
       - frontend-component-docs
       - frontend-iconfont
