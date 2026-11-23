@@ -1,16 +1,16 @@
 ---
 name: ai-massage-comment-standards
 description: >
-  在新增、修改或审查 xiaozhi-esp32-server/main/xiaozhi-server 下的
+  在新增、修改或审查 backend/device-server 下的
   Python 注释或 docstring 时使用。不要用于非 Python 文件、生成文件、
   其他目录或与注释无关的普通代码修改。
 ---
 
-# xiaozhi-server Python 注释与 Docstring 规范
+# device-server Python 注释与 Docstring 规范
 
 ## 适用范围
 
-- 仅适用于 `xiaozhi-esp32-server/main/xiaozhi-server/` 下的 Python 文件。
+- 仅适用于 `backend/device-server/` 下的 Python 文件。
 - 只在任务涉及新增、修改或审查注释、docstring 时使用。
 - 不将 Python 注释规则套用到 JavaScript、TypeScript、JSON、YAML、Markdown、音频或生成文件。
 

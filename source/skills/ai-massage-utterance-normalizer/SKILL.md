@@ -23,14 +23,14 @@ description: >
 先判断这次需求是否只是“别名归一”：
 
 1. 如果目标是现有规范词，例如 `楼捏 -> 揉捏`，使用本技能，通常只修改归一化规则、回归测试和词条文档。
-2. 如果目标词代表新的业务能力、`DeviceCommand`、`massage.*` 动作或语义程序，不能只增加归一词。应继续完成 `DeviceCommand -> massage.* -> self.massage.* -> MassageCommand -> BoardAdapter` 的完整链路，并按需使用仓库中的 `laya-massage-intent` 技能。
+2. 如果目标词代表新的业务能力、`DeviceCommand`、`massage.*` 动作或语义程序，不能只增加归一词。应继续完成 `DeviceCommand -> massage.* -> self.massage.* -> MassageCommand -> BoardAdapter` 的完整链路，并按需使用仓库中的 `ai-massage-massage-intent` 技能。
 3. 如果问题是模型声学混淆、热词配置或无法从文本可靠判断的口音问题，先记录原始 ASR 样本并单独评估 FunASR/模型方案；不要用宽泛的全局替换掩盖不确定性。
 
 ## 当前实现位置
 
 本仓库的统一入口是：
 
-`xiaozhi-esp32-server/main/xiaozhi-server/core/assistant/massage_domain/utterance_normalizer.py`
+`backend/device-server/core/assistant/massage_domain/utterance_normalizer.py`
 
 关键接口和约定：
 
@@ -105,7 +105,7 @@ description: >
 
 测试文件：
 
-`xiaozhi-esp32-server/main/xiaozhi-server/tests/massage/test_utterance_normalizer.py`
+`backend/device-server/tests/massage/test_utterance_normalizer.py`
 
 采用表驱动样本，至少覆盖：
 
@@ -126,7 +126,7 @@ description: >
 
 ## 验证命令
 
-在 `xiaozhi-esp32-server/main/xiaozhi-server` 目录使用项目虚拟环境运行：
+在 `backend/device-server` 目录使用项目虚拟环境运行：
 
 ```bash
 .venv/bin/python -m unittest tests.massage.test_utterance_normalizer -q

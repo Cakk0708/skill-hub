@@ -1,8 +1,8 @@
 ---
-name: ai-massage-laya-massage-intent
+name: ai-massage-massage-intent
 description: |
-  当新增或修复按摩口语表达、同义词、连续对话训练样本，或出现 Laya 把明确按摩控制路由为 uncertain/通用处理、回复不支持、错误参数、LLM 兜底、语义动作未执行、能力声明缺失、MCP 映射失败时触发此技能。
-  本技能用于沿 xiaozhi-AI 唯一按摩主链路定位不兼容点，完成从内嵌 MassageAgent 的确定性识别、状态计算和语义动作，到 xiaozhi-server 能力声明与执行编排、ESP32 MCP、MassageController、BoardAdapter、岭阳协议适配及回归验证的闭环修改，禁止只改回复文案或绕过语义边界。
+  当新增或修复按摩口语表达、同义词、连续对话训练样本，或出现 FastText 决策层（一级意图路由）把明确按摩控制路由为 uncertain/通用处理、回复不支持、错误参数、LLM 兜底、语义动作未执行、能力声明缺失、MCP 映射失败时触发此技能。
+  本技能用于沿 AI-Massage 唯一按摩主链路定位不兼容点，完成从内嵌 MassageAgent 的确定性识别、状态计算和语义动作，到 device-server 能力声明与执行编排、ESP32 MCP、MassageController、BoardAdapter、岭阳协议适配及回归验证的闭环修改，禁止只改回复文案或绕过语义边界。
 ---
 
 # 常用概念
@@ -12,10 +12,10 @@ description: |
 ```text
 用户对话
   -> ASR 文本与按摩口语归一化
-  -> Laya 一级路由与分发
-  -> xiaozhi-esp32-server 内嵌 MassageAgent
+  -> FastText 决策层一级路由与分发
+  -> backend/device-server 内嵌 MassageAgent
   -> 语义执行计划
-  -> xiaozhi-server 执行编排与 ESP32 MCP
+  -> device-server 执行编排与 ESP32 MCP
   -> ESP32 MassageController / MassageBoardAdapter
   -> 岭阳协议适配层
   -> UART / 主板
@@ -23,26 +23,29 @@ description: |
 
 常用服务端路径：
 
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/providers/intent/laya_router/taxonomy.py`：Laya 一级意图定义与分类说明。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/providers/intent/laya_router/policy.py`：一级路由确定性校准、明确控制证据与安全拒判。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/providers/intent/laya_router/service.py`：模型原始分类、概率门限与校准策略的合并。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/handle/intentHandler.py`：按最终 route 分发到按摩、天气、音乐或通用处理器。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/assistant/massage_domain/services/conversation_service.py`：确定性口语识别、相对值计算、会话上下文和回复生成。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/assistant/massage_domain/agent.py`：把 `DeviceCommand` 转换为稳定的 `massage.*` 语义动作，并按设备能力筛选执行计划。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/assistant/massage_domain/schemas/`：`DeviceState`、`DeviceCommand`、按摩 DSL 和语义程序模型。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/providers/massage/massage_agent_adapter.py`：读取设备状态、声明 `supported_app_commands`、发现 MCP 工具并执行。
-- `xiaozhi-esp32-server/main/xiaozhi-server/core/providers/massage/command_mapper.py`：把 `massage.*` 映射为 `self.massage.*`；不得在此生成岭阳裸报文。
-- `xiaozhi-esp32-server/main/xiaozhi-server/tests/massage/`：内嵌 Agent 与执行编排回归测试。
+- `backend/device-server/core/providers/intent/intent_router/provider_runtime.py`：FastText 模型加载与摘要校验、路由标签（`ROUTE_LABELS`、`SYSTEM_CONTROL_LABELS`）到一级路由的映射。
+- `backend/device-server/core/providers/intent/intent_router/policy.py`：一级路由确定性校准、明确控制证据与安全拒判。
+- `backend/device-server/core/providers/intent/intent_router/service.py`：FastText 原始分类、概率门限与校准策略的合并，以及确认答复三态判断。
+- `backend/device-server/core/providers/intent/intent_router/dispatcher.py`：停止优先、确认候选、pending 续接和受限理解入口的统一分发。
+- `backend/device-server/tests/intent/data/fasttext/`、`backend/device-server/tests/intent/train_fasttext.py`、`backend/device-server/tests/intent/evaluate_fasttext.py`：路由与确认模型的语料、训练和评估脚本。
+- `backend/device-server/config.yaml` 的 `intent_router` / `confirmation_router`：当前模型路径、revision、SHA-256 和阈值。
+- `backend/device-server/core/handle/intentHandler.py`：按最终 route 分发到按摩、天气、音乐或通用处理器。
+- `backend/device-server/core/assistant/massage_domain/services/conversation_service.py`：确定性口语识别、相对值计算、会话上下文和回复生成。
+- `backend/device-server/core/assistant/massage_domain/agent.py`：把 `DeviceCommand` 转换为稳定的 `massage.*` 语义动作，并按设备能力筛选执行计划。
+- `backend/device-server/core/assistant/massage_domain/schemas/`：`DeviceState`、`DeviceCommand`、按摩 DSL 和语义程序模型。
+- `backend/device-server/core/providers/massage/massage_agent_adapter.py`：读取设备状态、声明 `supported_app_commands`、发现 MCP 工具并执行。
+- `backend/device-server/core/providers/massage/command_mapper.py`：把 `massage.*` 映射为 `self.massage.*`；不得在此生成岭阳裸报文。
+- `backend/device-server/tests/massage/`：内嵌 Agent 与执行编排回归测试。
 
 常用 ESP32 路径：
 
-- `xiaozhi-esp32/main/massage/massage_command.*`：主板无关的 `MassageCommandName`、参数校验和幂等指纹。
-- `xiaozhi-esp32/main/massage/massage_mcp_tools.cc`：`self.massage.*` MCP 注册、参数范围和提交入口。
-- `xiaozhi-esp32/main/massage/massage_controller.*`：队列、ACK、确认、停止优先级和状态合并。
-- `xiaozhi-esp32/main/massage/massage_safety_guard.cc`：状态新鲜度、时效、故障和运行阶段的本地二次校验。
-- `xiaozhi-esp32/main/massage/massage_board_adapter.*`：稳定完成条件，不包含主板功能码。
-- `xiaozhi-esp32/main/massage/lingyang/`：岭阳功能码、帧编码、ACK、状态位和故障位的唯一归属。
-- `xiaozhi-esp32/tests/lingyang_protocol_test.cc`、`xiaozhi-esp32/tests/massage_controller_test.cc`：Mac 主机协议与 Controller 测试。
+- `firmware/esp32-s3/main/massage/massage_command.*`：主板无关的 `MassageCommandName`、参数校验和幂等指纹。
+- `firmware/esp32-s3/main/massage/massage_mcp_tools.cc`：`self.massage.*` MCP 注册、参数范围和提交入口。
+- `firmware/esp32-s3/main/massage/massage_controller.*`：队列、ACK、确认、停止优先级和状态合并。
+- `firmware/esp32-s3/main/massage/massage_safety_guard.cc`：状态新鲜度、时效、故障和运行阶段的本地二次校验。
+- `firmware/esp32-s3/main/massage/massage_board_adapter.*`：稳定完成条件，不包含主板功能码。
+- `firmware/esp32-s3/main/massage/lingyang/`：岭阳功能码、帧编码、ACK、状态位和故障位的唯一归属。
+- `firmware/esp32-s3/tests/lingyang_protocol_test.cc`、`firmware/esp32-s3/tests/massage_controller_test.cc`：Mac 主机协议与 Controller 测试。
 
 关键概念：
 
@@ -54,16 +57,16 @@ description: |
 - **局部 ACK**：只更新对应字段，再合并到完整 `MassageState` 快照；不能把单条 ACK 当成完整设备状态。
 - **黄金报文**：必须写明业务含义、十六进制、期望结果和来源。历史项目只能作为待验证参考，不得伪装成真板事实。
 
-## Laya 一级路由诊断
+## 一级路由诊断
 
-看到 Laya 把明确的设备控制表达路由为 `uncertain` 或通用处理器时，先定位路由边界，不从最终播报文案反推设备动作：
+一级路由由本地 FastText 模型加确定性策略组成（Laya 已退役）。看到决策层把明确的设备控制表达路由为 `uncertain` 或通用处理器时，先定位路由边界，不从最终播报文案反推设备动作：
 
 1. 对照 ASR 最终文本、归一化文本和路由请求，确认问题原句没有在入口处被改写或截断。
-2. 分开读取模型原始 route/概率与最终 route。`top1/top2` 描述模型分类；`confidence`、`accepted`、`abstain_reason` 和校准规则描述最终决策。`abstain_reason=route_policy_uncertain` 表示确定性策略选择了拒判，即使调整模型提示或置信度阈值也不会越过该策略。
-3. 检查 `intentHandler.py` 的最终分支。`uncertain` 会进入通用处理流程，MassageAgent 不会获得本轮控制请求；因此由通用回复产生的建议不能视为设备执行结果。
-4. 在 `policy.py` 为有明确目标和方向的省略式控制补充窄匹配，并在 `taxonomy.py` 同步分类说明和正例。保留问句、否定、假设及多意图保护；不要把所有按摩词或所有 `uncertain` 直接升级为设备控制，也不要只降低全局阈值。
+2. 分开读取模型原始 route/概率与最终 route。`model_route`、`model_confidence` 和 `top1/top2` 描述 FastText 模型分类；`confidence`、`accepted`、`abstain_reason`、`decision_source` 和 `calibration_rule_ids` 描述最终决策。`abstain_reason=route_policy_uncertain` 表示确定性策略选择了拒判，即使重训模型或调整置信度阈值也不会越过该策略；`low_confidence`、`low_margin` 则表示模型分类没有通过门槛。
+3. 检查 `intentHandler.py` 的最终分支。`uncertain` 默认进入通用处理流程，MassageAgent 不会获得本轮控制请求（只有分发决定带 `massage_understanding_hint` 的受限理解入口例外，且它不授予控制权限）；因此由通用回复产生的建议不能视为设备执行结果。
+4. 在 `policy.py` 为有明确目标和方向的省略式控制补充窄匹配；需要改变模型分类边界时，在 `tests/intent/data/fasttext/` 的路由语料中补充正例和反例。保留问句、否定、假设及多意图保护；不要把所有按摩词或所有 `uncertain` 直接升级为设备控制，也不要只降低全局阈值。
 5. 路由到 `massage_command` 后继续检查 MassageAgent 是否能确定性识别同一句、正确选择目标字段并计算参数。路由修复只负责把请求送入按摩链路；若下游没有对应语义字段或含义尚未确认，应澄清，不能凭 route 推断动作。
-6. taxonomy 分类边界改变时同步更新 `TAXONOMY_VERSION`，并用基线样本覆盖原句、相近正例、问句/否定/假设反例和多意图表达。
+6. 路由语料改变后用 `train_fasttext.py` 以新的 revision 重新训练、用 `evaluate_fasttext.py` 评估，把新模型放入 `models/intent/` 并同步更新 `config.yaml` 中 `intent_router` 的 `model_path`、`model_revision` 和 `model_sha256`；不得覆盖已发布 revision 的模型文件。锁定评估样本需覆盖原句、相近正例、问句/否定/假设反例和多意图表达。
 
 
 # 任务目标
@@ -74,7 +77,7 @@ description: |
 
 ```text
 ASR 最终文本与按摩口语归一化
-  -> Laya 模型原始分类
+  -> FastText 模型原始分类
   -> route policy 校准
   -> intentHandler 最终分发
   -> MassageAgent 确定性表达识别
@@ -97,7 +100,7 @@ ASR 最终文本与按摩口语归一化
    - 新语义动作：补齐服务端动作、mapper、ESP32 MCP、命令模型、校验、安全规则、BoardAdapter 和执行确认。
    - 回复错误：先确认执行计划和执行结果正确，再调整确定性回复或回复 prompt。
 
-5. 对设备控制表达采用主板无关的数据模型。只有 `xiaozhi-esp32/main/massage/lingyang/` 可以新增岭阳功能码、键值、帧布局和状态位解析。
+5. 对设备控制表达采用主板无关的数据模型。只有 `firmware/esp32-s3/main/massage/lingyang/` 可以新增岭阳功能码、键值、帧布局和状态位解析。
 6. 为每个原始表达增加表驱动测试，至少断言：不发生非预期 LLM 调用、回复符合业务语义、执行类型正确、动作及参数正确、没有裸报文泄漏。
 7. 增加一个带现有 `current_intent` 的多轮测试，确保控制型补充语句不会错误重建或重启完整语义程序。
 8. 若修改 ESP32 命令链，增加 mapper、MCP/Controller、ACK 状态合并和完成条件测试；若修改岭阳协议，增加带来源说明的黄金报文测试。

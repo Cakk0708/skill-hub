@@ -1,17 +1,17 @@
 ---
 name: ai-massage-build-flash
 description: >
-  在修改 xiaozhi-esp32 下的固件源码、配置、组件或测试时使用。
+  在修改 firmware/esp32-s3 下的固件源码、配置、组件或测试时使用。
   修改后默认不执行 ESP-IDF 固件构建或烧录，由用户自行构建并刷写硬件；
-  只有用户明确要求时才执行构建或烧录。不要用于 xiaozhi-esp32-server
+  只有用户明确要求时才执行构建或烧录。不要用于 backend/device-server
   或仓库其他目录。
 ---
 
-# xiaozhi-esp32 构建与烧录边界
+# firmware/esp32-s3 构建与烧录边界
 
 ## 默认行为
 
-- 修改 `xiaozhi-esp32/` 下代码、配置、组件或测试后，不自动执行固件构建。
+- 修改 `firmware/esp32-s3/` 下代码、配置、组件或测试后，不自动执行固件构建。
 - 不自动执行固件烧录、设备重启或真实硬件控制。
 - 由用户自行构建固件并刷写到硬件。
 
@@ -23,5 +23,5 @@ description: >
 
 ## 范围边界
 
-- 本 Skill 只约束 `xiaozhi-esp32/`。
-- 不把 ESP-IDF 构建规则应用到 `xiaozhi-esp32-server/` 或其他目录。
+- 本 Skill 只约束 `firmware/esp32-s3/`。
+- 不把 ESP-IDF 构建规则应用到 `backend/device-server/` 或其他目录。

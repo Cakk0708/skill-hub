@@ -29,7 +29,7 @@ projects:
       - docker-deployment-requirements
       - ai-massage-build-flash
       - ai-massage-comment-standards
-      - ai-massage-laya-massage-intent
+      - ai-massage-massage-intent
       - ai-massage-protocol-lingyang-board
       - ai-massage-protocol-ci1302
       - ai-massage-protocol-7ctft
