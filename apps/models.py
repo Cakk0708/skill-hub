@@ -15,6 +15,7 @@ class Skill:
 class Provider:
     name: str
     default_skill_dir: Path
+    sync_mode: str = "symlink"
 
     def skill_dir(self, override: str | Path | None = None) -> Path:
         """Return the configured destination directory or this provider's default."""
@@ -25,6 +26,7 @@ class Provider:
 class ProjectProvider:
     enabled: bool = True
     skills: tuple[str, ...] = ()
+    sync_mode: str | None = None
 
 
 @dataclass(frozen=True)
@@ -60,6 +62,7 @@ class Config:
     projects: Mapping[str, Project]
     provider_rule_dirs: Mapping[str, Path] = field(default_factory=dict)
     provider_rule_index_dirs: Mapping[str, Path] = field(default_factory=dict)
+    provider_sync_modes: Mapping[str, str] = field(default_factory=dict)
 
     @property
     def root(self) -> Path:

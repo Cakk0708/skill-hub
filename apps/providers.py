@@ -6,6 +6,10 @@ from pathlib import Path
 from .errors import ConfigError
 from .models import Provider
 
+SYNC_MODE_SYMLINK = "symlink"
+SYNC_MODE_COPY = "copy"
+VALID_SYNC_MODES = (SYNC_MODE_SYMLINK, SYNC_MODE_COPY)
+
 
 class ProviderRegistry:
     """Provider definitions live in one registry and can be extended by config."""
@@ -20,13 +24,26 @@ class ProviderRegistry:
         self._providers = dict(providers)
 
     @classmethod
-    def from_overrides(cls, overrides: Mapping[str, Path]) -> ProviderRegistry:
+    def from_overrides(
+        cls,
+        overrides: Mapping[str, Path],
+        sync_modes: Mapping[str, str] | None = None,
+    ) -> ProviderRegistry:
+        configured_modes = sync_modes or {}
         providers = {
-            name: Provider(name=name, default_skill_dir=skill_dir)
+            name: Provider(
+                name=name,
+                default_skill_dir=skill_dir,
+                sync_mode=configured_modes.get(name, SYNC_MODE_SYMLINK),
+            )
             for name, skill_dir in cls.BUILT_INS.items()
         }
         for name, skill_dir in overrides.items():
-            providers[name] = Provider(name=name, default_skill_dir=skill_dir)
+            providers[name] = Provider(
+                name=name,
+                default_skill_dir=skill_dir,
+                sync_mode=configured_modes.get(name, SYNC_MODE_SYMLINK),
+            )
         return cls(providers)
 
     def __contains__(self, name: str) -> bool:
@@ -114,4 +131,29 @@ def parse_provider_rule_index_dirs(value: object) -> dict[str, Path]:
             )
         rule_index_dirs[name] = Path(rule_index_dir).expanduser()
     return rule_index_dirs
+
+
+def parse_provider_sync_modes(value: object) -> dict[str, str]:
+    """Read optional provider sync modes ('symlink' or 'copy')."""
+    if value is None:
+        return {}
+    if not isinstance(value, dict):
+        raise ConfigError("'providers' must be a mapping of provider names to settings")
+
+    sync_modes: dict[str, str] = {}
+    for name, settings in value.items():
+        if not isinstance(name, str) or not name.strip():
+            raise ConfigError("provider names must be non-empty strings")
+        if not isinstance(settings, dict):
+            raise ConfigError(f"provider '{name}' settings must be a mapping")
+        sync_mode = settings.get("sync_mode")
+        if sync_mode is None:
+            continue
+        if not isinstance(sync_mode, str) or sync_mode not in VALID_SYNC_MODES:
+            allowed = ", ".join(f"'{mode}'" for mode in VALID_SYNC_MODES)
+            raise ConfigError(
+                f"provider '{name}' sync_mode must be one of: {allowed}"
+            )
+        sync_modes[name] = sync_mode
+    return sync_modes
 

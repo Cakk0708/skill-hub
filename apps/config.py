@@ -12,9 +12,11 @@ from .errors import ConfigError
 from .models import Config, Project, ProjectProvider, Skill
 from .providers import (
     ProviderRegistry,
+    VALID_SYNC_MODES,
     parse_provider_overrides,
-    parse_provider_rule_index_dirs,
     parse_provider_rule_dirs,
+    parse_provider_rule_index_dirs,
+    parse_provider_sync_modes,
 )
 
 _ENVIRONMENT_VARIABLE = re.compile(
@@ -122,7 +124,8 @@ def load_config(file_path: Path) -> Config:
     provider_overrides = parse_provider_overrides(document.get("providers"))
     provider_rule_dirs = parse_provider_rule_dirs(document.get("providers"))
     provider_rule_index_dirs = parse_provider_rule_index_dirs(document.get("providers"))
-    registry = ProviderRegistry.from_overrides(provider_overrides)
+    provider_sync_modes = parse_provider_sync_modes(document.get("providers"))
+    registry = ProviderRegistry.from_overrides(provider_overrides, provider_sync_modes)
 
     skills = _discover_skills(file_path.parent)
 
@@ -148,12 +151,23 @@ def load_config(file_path: Path) -> Config:
                 raise ConfigError(
                     f"projects.{name}.providers.{provider_name}.enabled must be true or false"
                 )
+            project_sync_mode = provider_values.get("sync_mode")
+            if project_sync_mode is not None and (
+                not isinstance(project_sync_mode, str)
+                or project_sync_mode not in VALID_SYNC_MODES
+            ):
+                allowed = ", ".join(f"'{mode}'" for mode in VALID_SYNC_MODES)
+                raise ConfigError(
+                    f"projects.{name}.providers.{provider_name}.sync_mode "
+                    f"must be one of: {allowed}"
+                )
             project_providers[provider_name] = ProjectProvider(
                 enabled=enabled,
                 skills=_names(
                     provider_values.get("skills"),
                     f"projects.{name}.providers.{provider_name}.skills",
                 ),
+                sync_mode=project_sync_mode,
             )
 
         project = Project(
@@ -181,4 +195,5 @@ def load_config(file_path: Path) -> Config:
         projects=projects,
         provider_rule_dirs=provider_rule_dirs,
         provider_rule_index_dirs=provider_rule_index_dirs,
+        provider_sync_modes=provider_sync_modes,
     )

@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import os
 import re
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
 
-from .links import LinkState, LinkStrategy
+from .links import CopyStrategy, LinkState, LinkStrategy
 from .models import Config
-from .providers import ProviderRegistry
+from .providers import SYNC_MODE_COPY, SYNC_MODE_SYMLINK, ProviderRegistry
 
 
 @dataclass(frozen=True)
@@ -20,10 +21,16 @@ class LinkPlan:
     source: Path | None
     sources: tuple[Path, ...]
     providers: tuple[str, ...]
+    sync_mode: str = SYNC_MODE_SYMLINK
+    sync_modes: tuple[str, ...] = (SYNC_MODE_SYMLINK,)
 
     @property
     def has_source_conflict(self) -> bool:
         return len(self.sources) > 1
+
+    @property
+    def has_sync_mode_conflict(self) -> bool:
+        return len(self.sync_modes) > 1
 
 
 @dataclass(frozen=True)
@@ -61,6 +68,7 @@ class RuleIndexSyncResult:
     files_linked: int
     documents_updated: int
     issues: tuple[DoctorIssue, ...]
+    files_copied: int = 0
 
 
 _ATX_HEADING = re.compile(r"^ {0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$")
@@ -365,6 +373,37 @@ def _ensure_rule_index_link(source: Path, target: Path) -> tuple[bool, str | Non
     return True, None
 
 
+def _copy_rule_index_file(source: Path, target: Path) -> tuple[bool, str | None]:
+    if not source.is_file():
+        return False, f"rule-index source file does not exist: {source}"
+
+    try:
+        if os.path.lexists(target):
+            if target.is_dir() and not target.is_symlink():
+                return False, "target exists and is a directory"
+            target.unlink()
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source.resolve(), target)
+    except OSError as exc:
+        return False, str(exc)
+    return True, None
+
+
+def _provider_sync_mode(
+    config: Config,
+    registry: ProviderRegistry,
+    project_name: str,
+    provider_name: str,
+) -> str:
+    project = config.projects[project_name]
+    project_provider = project.providers.get(provider_name)
+    if project_provider is not None and project_provider.sync_mode is not None:
+        return project_provider.sync_mode
+    return config.provider_sync_modes.get(
+        provider_name, registry[provider_name].sync_mode
+    )
+
+
 def _markdown_cell(value: str) -> str:
     return " ".join(value.replace("|", "\\|").split())
 
@@ -604,11 +643,14 @@ def _remove_rule_index_document_section(target: Path) -> tuple[bool, str | None]
 
 
 def sync_rule_indexes(config: Config) -> RuleIndexSyncResult:
-    """Link configured rule-index files and update each Provider's rule document."""
+    """Link or copy configured rule-index files and update each Provider's rule document."""
     issues: list[DoctorIssue] = []
     files_linked = 0
+    files_copied = 0
     documents_updated = 0
-    registry = ProviderRegistry.from_overrides(config.provider_overrides)
+    registry = ProviderRegistry.from_overrides(
+        config.provider_overrides, config.provider_sync_modes
+    )
 
     active_targets: set[str] = set()
     for project in config.projects.values():
@@ -694,14 +736,25 @@ def sync_rule_indexes(config: Config) -> RuleIndexSyncResult:
                 directory_display = str(directory_path)
             group[2].add(directory_display)
 
+            sync_mode = _provider_sync_mode(
+                config, registry, project.name, provider_name
+            )
             for document in documents:
                 link_target = Path(os.path.abspath(directory_path / document.path.name))
-                created, error = _ensure_rule_index_link(document.path, link_target)
-                if error is not None:
-                    issues.append(DoctorIssue("rule-index-link-error", link_target, error))
-                    continue
-                if created:
-                    files_linked += 1
+                if sync_mode == SYNC_MODE_COPY:
+                    copied, error = _copy_rule_index_file(document.path, link_target)
+                    if error is not None:
+                        issues.append(DoctorIssue("rule-index-copy-error", link_target, error))
+                        continue
+                    if copied:
+                        files_copied += 1
+                else:
+                    created, error = _ensure_rule_index_link(document.path, link_target)
+                    if error is not None:
+                        issues.append(DoctorIssue("rule-index-link-error", link_target, error))
+                        continue
+                    if created:
+                        files_linked += 1
                 try:
                     rule_file_display = link_target.relative_to(project.path).as_posix()
                 except ValueError:
@@ -720,17 +773,24 @@ def sync_rule_indexes(config: Config) -> RuleIndexSyncResult:
             elif updated:
                 documents_updated += 1
 
-    return RuleIndexSyncResult(files_linked, documents_updated, tuple(issues))
+    return RuleIndexSyncResult(
+        files_linked, documents_updated, tuple(issues), files_copied=files_copied
+    )
 
 
 def build_plan(config: Config, registry: ProviderRegistry | None = None) -> tuple[LinkPlan, ...]:
-    registry = registry or ProviderRegistry.from_overrides(config.provider_overrides)
+    registry = registry or ProviderRegistry.from_overrides(
+        config.provider_overrides, config.provider_sync_modes
+    )
     grouped: dict[tuple[str, str], dict[str, object]] = {}
     for project in config.projects.values():
         for provider_name in project.enabled_providers(registry.names):
             provider = registry[provider_name]
             provider_dir = provider.skill_dir(config.provider_overrides.get(provider_name))
             skill_dir = provider_dir if provider_dir.is_absolute() else project.path / provider_dir
+            sync_mode = _provider_sync_mode(
+                config, registry, project.name, provider_name
+            )
             for skill_name in project.skills_for(provider_name):
                 source = config.skills[skill_name].path.resolve(strict=False)
                 # Keep the final path lexical: resolving an existing link here would
@@ -747,6 +807,7 @@ def build_plan(config: Config, registry: ProviderRegistry | None = None) -> tupl
                         "target": target,
                         "sources": {},
                         "providers": [],
+                        "sync_modes": [],
                     },
                 )
                 sources = group["sources"]
@@ -756,12 +817,19 @@ def build_plan(config: Config, registry: ProviderRegistry | None = None) -> tupl
                 assert isinstance(providers, list)
                 if provider_name not in providers:
                     providers.append(provider_name)
+                sync_modes = group["sync_modes"]
+                assert isinstance(sync_modes, list)
+                if sync_mode not in sync_modes:
+                    sync_modes.append(sync_mode)
 
     plans: list[LinkPlan] = []
     for group in grouped.values():
         source_map = group["sources"]
         assert isinstance(source_map, dict)
         sources = tuple(source_map.values())
+        sync_modes_list = group["sync_modes"]
+        assert isinstance(sync_modes_list, list)
+        sync_modes = tuple(sync_modes_list)
         plans.append(
             LinkPlan(
                 project_name=str(group["project_name"]),
@@ -770,6 +838,8 @@ def build_plan(config: Config, registry: ProviderRegistry | None = None) -> tupl
                 source=sources[0] if len(sources) == 1 else None,
                 sources=sources,
                 providers=tuple(group["providers"]),  # type: ignore[arg-type]
+                sync_mode=sync_modes[0] if len(sync_modes) == 1 else SYNC_MODE_SYMLINK,
+                sync_modes=sync_modes,
             )
         )
     return tuple(plans)
@@ -777,23 +847,38 @@ def build_plan(config: Config, registry: ProviderRegistry | None = None) -> tupl
 
 def status(config: Config, strategy: LinkStrategy) -> tuple[StatusRow, ...]:
     rows: list[StatusRow] = []
+    copy_strategy = CopyStrategy()
     for plan in build_plan(config):
         if plan.has_source_conflict:
             rows.append(
                 StatusRow(plan, "plan conflict", "providers assign different skills to one path")
             )
+        elif plan.has_sync_mode_conflict:
+            rows.append(
+                StatusRow(
+                    plan,
+                    "plan conflict",
+                    "providers assign different sync_mode values to one path",
+                )
+            )
         elif not plan.project_path.is_dir():
             rows.append(StatusRow(plan, "project missing"))
         else:
             assert plan.source is not None
-            state = strategy.check(plan.source, plan.target)
+            plan_strategy = (
+                copy_strategy if plan.sync_mode == SYNC_MODE_COPY else strategy
+            )
+            state = plan_strategy.check(plan.source, plan.target)
             rows.append(StatusRow(plan, state.value))
     return tuple(rows)
 
 
 def doctor(config: Config, strategy: LinkStrategy) -> tuple[DoctorIssue, ...]:
     issues: list[DoctorIssue] = []
-    registry = ProviderRegistry.from_overrides(config.provider_overrides)
+    registry = ProviderRegistry.from_overrides(
+        config.provider_overrides, config.provider_sync_modes
+    )
+    copy_strategy = CopyStrategy()
     for project in config.projects.values():
         if not project.path.is_dir():
             issues.append(
@@ -838,16 +923,37 @@ def doctor(config: Config, strategy: LinkStrategy) -> tuple[DoctorIssue, ...]:
                 )
             )
             continue
+        if plan.has_sync_mode_conflict:
+            issues.append(
+                DoctorIssue(
+                    "plan-conflict",
+                    plan.target,
+                    "providers sharing this target assign different sync_mode values",
+                )
+            )
+            continue
         if not plan.project_path.is_dir():
             continue
         assert plan.source is not None
-        state = strategy.check(plan.source, plan.target)
+        plan_strategy = (
+            copy_strategy if plan.sync_mode == SYNC_MODE_COPY else strategy
+        )
+        state = plan_strategy.check(plan.source, plan.target)
         if state is LinkState.BROKEN:
             issues.append(DoctorIssue("broken-link", plan.target, "link target is missing"))
         elif state is LinkState.WRONG_TARGET:
-            issues.append(
-                DoctorIssue("wrong-target", plan.target, f"link should point to '{plan.source}'")
-            )
+            if plan.sync_mode == SYNC_MODE_COPY:
+                issues.append(
+                    DoctorIssue(
+                        "wrong-target",
+                        plan.target,
+                        "copied skill is out of date or still a symlink; run sync to refresh",
+                    )
+                )
+            else:
+                issues.append(
+                    DoctorIssue("wrong-target", plan.target, f"link should point to '{plan.source}'")
+                )
         elif state is LinkState.CONFLICT:
             issues.append(
                 DoctorIssue(

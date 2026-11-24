@@ -45,6 +45,7 @@ providers:
     rule_dir: CLAUDE.md
   antigravity:
     skill_dir: .agents/skills
+    sync_mode: copy
     rule_index_dir: .agents/rules
     rule_dir: AGENTS.md
   cursor:
@@ -93,8 +94,9 @@ Codex and Antigravity currently share the `.agents/skills` project directory. If
 
 ## 平台链接行为
 
-- macOS/Linux：`main.py` 创建目录 symbolic link。
-- Windows：先尝试目录 symbolic link；失败后用 Windows `mklink /J` 创建 directory junction。
+- 每个 Provider 可通过 `providers.<name>.sync_mode`（或在项目级 `projects.<name>.providers.<provider>.sync_mode` 覆盖）选择同步方式：
+  - `symlink`（默认）：macOS/Linux 创建符号链接；Windows 先尝试符号链接，失败后用 `mklink /J` 创建 directory junction。
+  - `copy`：不使用文件夹或文件软链，每次同步时都会先删除目标中的旧软链/旧副本，再将最新的 Skill 目录和 `rule_index` 文件以真实文件形式完整复制到目标目录（自动忽略 `.DS_Store`、`Thumbs.db`、`desktop.ini`、`._*`）。适用于 Antigravity 等不读取软链的工具。
 - `bash run.sh` 需要 Bash、Python 环境和 `requirements.txt` 中的依赖。
 
 如果目标路径已有普通文件或目录，`main.py` 会报告路径冲突，不会覆盖现有内容。Skill Hub 不会自动清理旧链接或移除未配置的 Skill；如需迁移或清理，请先检查目标路径并手动处理。

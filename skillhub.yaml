@@ -14,6 +14,7 @@ providers:
     rule_dir: CLAUDE.md
   antigravity:
     skill_dir: .agents/skills
+    sync_mode: copy
     rule_index_dir: .agents/rules
     rule_dir: GEMINI.md
 
@@ -49,7 +50,7 @@ projects:
       claude:
         enabled: false
       antigravity:
-        enabled: false
+        enabled: true
   mes:
     path: ${MES_PROJECT}
     skills:
